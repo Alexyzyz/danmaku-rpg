@@ -1,9 +1,11 @@
-[gd_scene load_steps=6 format=3 uid="uid://cxds8kep1nb5a"]
+[gd_scene load_steps=8 format=3 uid="uid://cxds8kep1nb5a"]
 
 [ext_resource type="Script" path="res://scripts/battle/battle_camera_controller.gd" id="1_6ccnm"]
 [ext_resource type="Texture2D" uid="uid://dhxqucgfcoxer" path="res://sprites/spr_player_0_test.png" id="1_gcvp7"]
 [ext_resource type="Script" path="res://scripts/battle/battle_manager.gd" id="1_i1myg"]
 [ext_resource type="Script" path="res://scripts/battle/battle_player_controller.gd" id="3_wr4kn"]
+[ext_resource type="Script" path="res://scripts/battle/enemy ai/battle_enemy_0_ai.gd" id="5_lpjme"]
+[ext_resource type="PackedScene" uid="uid://wddf8klhn20w" path="res://prefabs/bullet.tscn" id="5_weer3"]
 
 [sub_resource type="QuadMesh" id="QuadMesh_dwefp"]
 
@@ -57,3 +59,12 @@ script = ExtResource("3_wr4kn")
 [node name="Sprite2D" type="Sprite2D" parent="Node2D/Player"]
 texture_filter = 1
 texture = ExtResource("1_gcvp7")
+
+[node name="Enemy" type="Node2D" parent="Node2D"]
+position = Vector2(579, 160)
+script = ExtResource("5_lpjme")
+
+[node name="Sprite2D" type="Sprite2D" parent="Node2D/Enemy"]
+texture = ExtResource("1_gcvp7")
+
+[node name="Bullet" parent="Node2D" instance=ExtResource("5_weer3")]

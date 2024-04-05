@@ -20,4 +20,4 @@ func placeholder_move(delta):
 	position = pos
 	look_at(Vector3.ZERO)
 	
-	revolve_t = fmod(revolve_t + 0.2 * delta, 1)
+	revolve_t = fmod(revolve_t + 0.05 * delta, 1)

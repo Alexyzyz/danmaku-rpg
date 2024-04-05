@@ -1,6 +1,7 @@
 extends Node2D
 
 const BASE_SPEED: float = 300
+const BASE_FOCUS_SPEED: float = 200
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -22,4 +23,5 @@ func move(delta):
 	var y_axis = moved_up - moved_down
 	var direction = Vector2(x_axis, -y_axis).normalized()
 	
-	position += BASE_SPEED * delta * direction
+	var speed = BASE_FOCUS_SPEED if Input.is_action_pressed("game_focus") else BASE_SPEED
+	position += speed * delta * direction
