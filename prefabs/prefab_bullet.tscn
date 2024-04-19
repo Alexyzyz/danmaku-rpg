@@ -1,0 +1,22 @@
+[gd_scene load_steps=5 format=3 uid="uid://wddf8klhn20w"]
+
+[ext_resource type="Script" path="res://scripts/battle/battle_bullet.gd" id="1_vy5js"]
+[ext_resource type="Script" path="res://components/movement_2d_component.gd" id="2_pxlko"]
+[ext_resource type="Texture2D" uid="uid://dkfvfmk8mtabn" path="res://sprites/bullets/spr_bullet_0_dropshadow.png" id="2_yumyv"]
+[ext_resource type="Texture2D" uid="uid://cgbmwjoy8kl3e" path="res://sprites/bullets/spr_bullet_0.png" id="3_oubs7"]
+
+[node name="Bullet" type="Node2D"]
+script = ExtResource("1_vy5js")
+
+[node name="Movement2DComponent" type="Node2D" parent="."]
+script = ExtResource("2_pxlko")
+
+[node name="DropShadow" type="Sprite2D" parent="."]
+self_modulate = Color(0, 0, 0, 1)
+texture_filter = 1
+texture = ExtResource("2_yumyv")
+
+[node name="Sprite" type="Sprite2D" parent="."]
+z_index = 1
+texture_filter = 1
+texture = ExtResource("3_oubs7")

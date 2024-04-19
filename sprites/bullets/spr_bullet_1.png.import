@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c04107l128a4i"
-path="res://.godot/imported/spr_circle_filled.png-19097db1c6dba1f4f4bed498e42d6826.ctex"
+uid="uid://dvtyetv6sxe7y"
+path="res://.godot/imported/spr_bullet_1.png-557388879c5ee6c9c258ffac0f9e3f2c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sprites/spr_circle_filled.png"
-dest_files=["res://.godot/imported/spr_circle_filled.png-19097db1c6dba1f4f4bed498e42d6826.ctex"]
+source_file="res://sprites/bullets/spr_bullet_1.png"
+dest_files=["res://.godot/imported/spr_bullet_1.png-557388879c5ee6c9c258ffac0f9e3f2c.ctex"]
 
 [params]
 

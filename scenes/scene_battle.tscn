@@ -1,0 +1,103 @@
+[gd_scene load_steps=13 format=3 uid="uid://cxds8kep1nb5a"]
+
+[ext_resource type="Script" path="res://scripts/battle/battle_camera_controller.gd" id="1_6ccnm"]
+[ext_resource type="Texture2D" uid="uid://dhxqucgfcoxer" path="res://sprites/spr_player_0_test.png" id="1_gcvp7"]
+[ext_resource type="Script" path="res://scripts/battle/battle_manager.gd" id="1_i1myg"]
+[ext_resource type="Script" path="res://scripts/battle/battle_bullet_manager.gd" id="2_t5emg"]
+[ext_resource type="Script" path="res://scripts/battle/battle_player_controller.gd" id="3_wr4kn"]
+[ext_resource type="Script" path="res://scripts/battle/enemies/battle_enemy_0_ai.gd" id="5_lpjme"]
+[ext_resource type="PackedScene" uid="uid://wddf8klhn20w" path="res://prefabs/prefab_bullet.tscn" id="5_weer3"]
+[ext_resource type="PackedScene" uid="uid://dxxatojl4t8tc" path="res://prefabs/debug/prefab_debug_cell.tscn" id="7_mj0hw"]
+[ext_resource type="Script" path="res://scripts/battle/bosses/mechanic/boss_mechanic_side_aim_attack_minion.gd" id="8_3y3ok"]
+[ext_resource type="Texture2D" uid="uid://c04107l128a4i" path="res://sprites/spr_circle.png" id="8_ecdi2"]
+[ext_resource type="Script" path="res://components/movement_2d_component.gd" id="10_hb05x"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_dwefp"]
+
+[node name="Root" type="Node"]
+
+[node name="BattleManager" type="Node" parent="."]
+script = ExtResource("1_i1myg")
+
+[node name="BulletManager" type="Node" parent="."]
+script = ExtResource("2_t5emg")
+
+[node name="Level" type="Node" parent="."]
+
+[node name="Control" type="Control" parent="Level"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="Level/Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="Level/Control/SubViewportContainer"]
+handle_input_locally = false
+size = Vector2i(1366, 768)
+render_target_update_mode = 4
+
+[node name="Camera3D" type="Camera3D" parent="Level/Control/SubViewportContainer/SubViewport"]
+transform = Transform3D(1, 0, 0, 0, 0.963444, 0.267911, 0, -0.267911, 0.963444, 0, 0.441752, 1.17917)
+script = ExtResource("1_6ccnm")
+
+[node name="Ground" type="MeshInstance3D" parent="Level/Control/SubViewportContainer/SubViewport"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
+mesh = SubResource("QuadMesh_dwefp")
+skeleton = NodePath("../..")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="Level/Control/SubViewportContainer/SubViewport"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.346087, 0.738017, -0.284633)
+
+[node name="Node2D" type="Node2D" parent="Level"]
+
+[node name="TopLeft" type="Node2D" parent="Level/Node2D"]
+
+[node name="DebugParent" type="Node2D" parent="Level/Node2D/TopLeft"]
+
+[node name="Cell" parent="Level/Node2D/TopLeft/DebugParent" instance=ExtResource("7_mj0hw")]
+visible = false
+modulate = Color(0, 0, 0, 0.0470588)
+
+[node name="Player" type="Node2D" parent="Level/Node2D/TopLeft"]
+position = Vector2(292, 613)
+script = ExtResource("3_wr4kn")
+
+[node name="Sprite2D" type="Sprite2D" parent="Level/Node2D/TopLeft/Player"]
+texture_filter = 1
+texture = ExtResource("1_gcvp7")
+
+[node name="Enemy" type="Node2D" parent="Level/Node2D/TopLeft"]
+position = Vector2(293, 162)
+script = ExtResource("5_lpjme")
+
+[node name="Sprite2D" type="Sprite2D" parent="Level/Node2D/TopLeft/Enemy"]
+texture = ExtResource("1_gcvp7")
+
+[node name="EnemyMinion" type="Node2D" parent="Level/Node2D/TopLeft"]
+script = ExtResource("8_3y3ok")
+
+[node name="Sprite2D" type="Sprite2D" parent="Level/Node2D/TopLeft/EnemyMinion"]
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("8_ecdi2")
+
+[node name="Movement2DComponent" type="Node2D" parent="Level/Node2D/TopLeft/EnemyMinion"]
+script = ExtResource("10_hb05x")
+
+[node name="BulletParent" type="Node2D" parent="Level/Node2D/TopLeft"]
+
+[node name="Bullet" parent="Level/Node2D/TopLeft/BulletParent" instance=ExtResource("5_weer3")]
+visible = false

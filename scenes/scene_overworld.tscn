@@ -1,0 +1,29 @@
+[gd_scene load_steps=3 format=3 uid="uid://by51wg8284mb8"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_iuxv3"]
+albedo_color = Color(0.470588, 0.372549, 0.262745, 1)
+metallic_specular = 0.0
+
+[sub_resource type="QuadMesh" id="QuadMesh_a76pw"]
+material = SubResource("StandardMaterial3D_iuxv3")
+
+[node name="Root" type="Node"]
+
+[node name="MenuManager" type="Node" parent="."]
+
+[node name="Node3D" type="Node3D" parent="."]
+
+[node name="Geometry" type="Node3D" parent="Node3D"]
+
+[node name="Ground" type="MeshInstance3D" parent="Node3D/Geometry"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
+mesh = SubResource("QuadMesh_a76pw")
+skeleton = NodePath("../../..")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2

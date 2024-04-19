@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dyl6x6guw0mer"
-path="res://.godot/imported/spr_bullet_0_dropshadow.png-d99c0cae9f7cef584d580d847b41fc5d.ctex"
+uid="uid://bbxcvh0rto3lb"
+path="res://.godot/imported/spr_square.png-bbe25242a8fbd41fa6ff679e6ad7abdc.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://scripts/battle/enemy ai/spr_bullet_0_dropshadow.png"
-dest_files=["res://.godot/imported/spr_bullet_0_dropshadow.png-d99c0cae9f7cef584d580d847b41fc5d.ctex"]
+source_file="res://sprites/spr_square.png"
+dest_files=["res://.godot/imported/spr_square.png-bbe25242a8fbd41fa6ff679e6ad7abdc.ctex"]
 
 [params]
 

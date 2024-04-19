@@ -52,19 +52,23 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.346087, 0.738017, -0.28463
 
 [node name="Node2D" type="Node2D" parent="."]
 
-[node name="Player" type="Node2D" parent="Node2D"]
-position = Vector2(587, 562)
+[node name="TopLeft" type="Node2D" parent="Node2D"]
+
+[node name="Player" type="Node2D" parent="Node2D/TopLeft"]
+position = Vector2(191, 401)
 script = ExtResource("3_wr4kn")
 
-[node name="Sprite2D" type="Sprite2D" parent="Node2D/Player"]
+[node name="Sprite2D" type="Sprite2D" parent="Node2D/TopLeft/Player"]
 texture_filter = 1
 texture = ExtResource("1_gcvp7")
 
-[node name="Enemy" type="Node2D" parent="Node2D"]
-position = Vector2(579, 160)
+[node name="Enemy" type="Node2D" parent="Node2D/TopLeft"]
+position = Vector2(198, 89)
 script = ExtResource("5_lpjme")
 
-[node name="Sprite2D" type="Sprite2D" parent="Node2D/Enemy"]
+[node name="Sprite2D" type="Sprite2D" parent="Node2D/TopLeft/Enemy"]
 texture = ExtResource("1_gcvp7")
 
-[node name="Bullet" parent="Node2D" instance=ExtResource("5_weer3")]
+[node name="BulletParent" type="Node2D" parent="Node2D/TopLeft"]
+
+[node name="Bullet" parent="Node2D/TopLeft/BulletParent" instance=ExtResource("5_weer3")]
