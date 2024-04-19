@@ -14,6 +14,7 @@ const COLLISION_GRID_PADDING = 0
 static var _prefab_bullet: PackedScene
 static var _parent_bullet: Node2D
 
+static var parent: Node2D
 static var obj_player: BattlePlayer
 static var origin_from_center: Vector2
 static var origin_from_top_left: Vector2
@@ -40,6 +41,7 @@ func _ready():
 	
 	set_up_collision_grid()
 	
+	parent = $"../Level/Node2D/TopLeft"
 	obj_player = $"../Level/Node2D/TopLeft/Player"
 	
 	_prefab_bullet = preload("res://prefabs/prefab_bullet.tscn")
@@ -158,30 +160,18 @@ static func is_cell_oob(cell: Vector2i) -> bool:
 
 # Bullet shooting handler
 
-static func shoot_bullet_at_direction(
-	pos: Vector2, dir: Vector2, spd: float,
-	sprite: Resource = _sprite_bullet_default,
-	sprite_dropshadow: Resource = _sprite_bullet_default_dropshadow):
-	
-	var new_bullet: BattleBullet = _prefab_bullet.instantiate()
-	new_bullet.name = "Bullet"
-	_parent_bullet.add_child(new_bullet)
-	
-	new_bullet.set_up_with_vector_dir(pos, dir.normalized(), spd, sprite, sprite_dropshadow)
-	BattleManager.add_to_collision_grid(new_bullet)
-
-static func shoot_bullet_at_angle(
+static func shoot_bullet(
 	pos: Vector2, angle: float, spd: float,
-	sprite: Resource = _sprite_bullet_default,
-	sprite_dropshadow: Resource = _sprite_bullet_default_dropshadow):
+	bullet_resource: UtilBulletResource.BulletResource = UtilBulletResource.default) -> BattleBullet:
 	
 	var new_bullet: BattleBullet = _prefab_bullet.instantiate()
 	new_bullet.name = "Bullet"
 	_parent_bullet.add_child(new_bullet)
 	
-	var true_angle = lerpf(0, 2 * PI, clamp(0, 1, angle))
-	new_bullet.set_up_with_angle_dir(pos, true_angle, spd, sprite, sprite_dropshadow)
+	new_bullet.set_up(pos, angle, spd, bullet_resource)
 	BattleManager.add_to_collision_grid(new_bullet)
+	
+	return new_bullet
 
 # Debugging purposes
 
@@ -206,8 +196,8 @@ func debug():
 	
 func debug_draw_cells():
 	const SPRITE_SIDE_LENGTH = 64
-	var grid_width: int = COLLISION_GRID_SIZE.x
-	var grid_height: int = COLLISION_GRID_SIZE.y
+	var grid_width: int = floor(COLLISION_GRID_SIZE.x)
+	var grid_height: int = floor(COLLISION_GRID_SIZE.y)
 	
 	for y in grid_height:
 		var offset = 0 if y % 2 == 0 else 1

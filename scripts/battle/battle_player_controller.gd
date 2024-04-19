@@ -28,7 +28,11 @@ func _move(delta):
 	var direction = Vector2(x_axis, -y_axis).normalized()
 	
 	var speed = BASE_FOCUS_SPEED if Input.is_action_pressed("game_focus") else BASE_SPEED
-	position += speed * delta * direction
+	var new_position = position + speed * delta * direction
+	new_position.x = clamp(new_position.x, 0, BattleManager.battle_area_size.x)
+	new_position.y = clamp(new_position.y, 0, BattleManager.battle_area_size.y)
+	
+	position = new_position
 
 func _check_collision():
 	var bullet_list: Array[BattleBullet] = BattleManager.get_bullet_in_cells_surrounding(position)
@@ -49,4 +53,4 @@ func _check_collision():
 				# print("Grazed bullet within " + str(distance))
 			bullet = bullet.collision_grid_next
 	
-	print("Bullets in cells surrounding (" + str(cell.x) + "," + str(cell.y) + "): " + str(list_length))
+	# print("Bullets in cells surrounding (" + str(cell.x) + "," + str(cell.y) + "): " + str(list_length))

@@ -36,7 +36,7 @@ func _shoot(delta):
 	spiral_attack.alarm = 0.01
 	spiral_attack.angle = fmod(spiral_attack.angle + 0.103, 1)
 	
-	BattleManager.shoot_bullet_at_angle(
+	BattleManager.shoot_bullet(
 		position, spiral_attack.angle, 50,
 		sprite_bullet_main, sprite_bullet_main_dropshadow)
 
@@ -55,4 +55,4 @@ func _shoot_ring(delta):
 		var offset_angle = lerpf(0, 2 * PI, i * step)
 		var offset = ring_radius * Vector2(cos(offset_angle), sin(offset_angle))
 		
-		BattleManager.shoot_bullet_at_angle(position + offset, ring_attack.angle, 100)
+		BattleManager.shoot_bullet(position + offset, ring_attack.angle, 100)
