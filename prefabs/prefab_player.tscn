@@ -1,17 +1,28 @@
-[gd_scene load_steps=4 format=3 uid="uid://bep854jo4peh"]
+[gd_scene load_steps=5 format=3 uid="uid://bep854jo4peh"]
 
-[ext_resource type="Script" path="res://scripts/battle/battle_player_controller.gd" id="1_e2tny"]
+[ext_resource type="Script" path="res://scripts/battle/battle_player.gd" id="1_e2tny"]
 [ext_resource type="Texture2D" uid="uid://dkfvfmk8mtabn" path="res://sprites/bullets/spr_bullet_0_dropshadow.png" id="2_2b7nw"]
-[ext_resource type="Texture2D" uid="uid://dhxqucgfcoxer" path="res://sprites/spr_player_0_test.png" id="2_a7u3x"]
+[ext_resource type="Texture2D" uid="uid://dx6vyfrcmvdkt" path="res://sprites/battle/players/priest/spr_battle_player_priest.png" id="3_1u1b1"]
+[ext_resource type="Texture2D" uid="uid://csu5yk74v7my6" path="res://sprites/battle/players/spr_battle_hitbox.png" id="4_eq2r7"]
 
 [node name="Player" type="Node2D"]
 script = ExtResource("1_e2tny")
 
-[node name="Dropshadow" type="Sprite2D" parent="."]
-self_modulate = Color(0, 0, 0, 0.501961)
+[node name="DropShadow" type="Sprite2D" parent="."]
+self_modulate = Color(1, 1, 1, 0.501961)
 scale = Vector2(14, 14)
 texture = ExtResource("2_2b7nw")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Rig" type="Sprite2D" parent="."]
 texture_filter = 1
-texture = ExtResource("2_a7u3x")
+scale = Vector2(2, 2)
+texture = ExtResource("3_1u1b1")
+hframes = 2
+region_enabled = true
+region_rect = Rect2(0, 0, 64, 48)
+
+[node name="Hitbox" type="Sprite2D" parent="."]
+z_index = 2
+texture_filter = 1
+scale = Vector2(2, 2)
+texture = ExtResource("4_eq2r7")
