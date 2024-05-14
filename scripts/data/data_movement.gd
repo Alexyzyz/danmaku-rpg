@@ -3,7 +3,10 @@ class_name MovementData
 var position: Vector2
 var direction: Vector2
 
-var direction_angle: float
+var direction_angle: float :
+	set(value):
+		direction_angle = value
+		direction = UtilMath.get_vector_from_angle(direction_angle)
 
 var speed: float
 var max_speed: float = INF
@@ -23,10 +26,5 @@ func reset():
 	max_speed = INF
 	acceleration = 0
 
-func rotate_bullet(angle: float):
+func rotate(angle: float):
 	direction_angle += angle
-	direction = UtilMath.get_vector_from_angle(direction_angle)
-
-func set_bullet_rotation(angle: float):
-	direction_angle = angle
-	direction = UtilMath.get_vector_from_angle(direction_angle)

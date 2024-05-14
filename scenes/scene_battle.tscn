@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://cxds8kep1nb5a"]
+[gd_scene load_steps=14 format=3 uid="uid://cxds8kep1nb5a"]
 
 [ext_resource type="Script" path="res://scripts/battle/battle_camera_controller.gd" id="1_6ccnm"]
 [ext_resource type="Script" path="res://scripts/battle/battle_manager.gd" id="1_i1myg"]
@@ -11,6 +11,7 @@
 [ext_resource type="Texture2D" uid="uid://dkfvfmk8mtabn" path="res://sprites/bullets/spr_bullet_0_dropshadow.png" id="9_j3kd0"]
 [ext_resource type="Texture2D" uid="uid://ss04wv2uapdv" path="res://sprites/battle/enemies/spr_battle_enemy_priest.png" id="9_xx1gm"]
 [ext_resource type="PackedScene" uid="uid://dmmnmh2tccwit" path="res://prefabs/prefab_player_priest_shot.tscn" id="12_3fub8"]
+[ext_resource type="Script" path="res://scripts/battle/battle_player_shot.gd" id="12_ep5ka"]
 
 [sub_resource type="QuadMesh" id="QuadMesh_dwefp"]
 
@@ -122,3 +123,4 @@ visible = false
 [node name="PlayerShotParent" type="Node2D" parent="Level/Node2D/TopLeft"]
 
 [node name="PlayerShot" parent="Level/Node2D/TopLeft/PlayerShotParent" instance=ExtResource("12_3fub8")]
+script = ExtResource("12_ep5ka")

@@ -1,10 +1,12 @@
-[gd_scene load_steps=2 format=3 uid="uid://dmmnmh2tccwit"]
+[gd_scene load_steps=3 format=3 uid="uid://dmmnmh2tccwit"]
 
+[ext_resource type="Script" path="res://scripts/battle/battle_player_shot.gd" id="1_3vfsm"]
 [ext_resource type="Texture2D" uid="uid://csfdruxoxpex7" path="res://sprites/battle/players/priest/spr_battle_player_priest_shots.png" id="1_yyuvb"]
 
 [node name="PlayerShot" type="Node2D"]
+script = ExtResource("1_3vfsm")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite" type="Sprite2D" parent="."]
 texture_filter = 1
 scale = Vector2(2, 2)
 texture = ExtResource("1_yyuvb")

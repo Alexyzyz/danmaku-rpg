@@ -5,8 +5,18 @@ const BASE_SPEED: float = 400
 const BASE_FOCUS_SPEED: float = 150
 
 const INVINCIBLE_TIME: float = 3
-const GRAZE_RADIUS = 50
-const HITBOX_RADIUS: float = 10
+const STOP_SHOOTING_TIME: float = 0.4
+const SHOOT_TIME: float = 0.06
+
+const GRAZE_RADIUS: float = 50
+const HITBOX_RADIUS: float = 1
+
+var _invincible_alarm: float
+var _stop_shooting_alarm: float
+var _shoot_alarm: float
+
+var _is_shooting: bool
+var _is_focused: bool
 
 # Prefabs
 @onready var prefab_shot: PackedScene = preload("res://prefabs/prefab_player_priest_shot.tscn")
@@ -14,15 +24,13 @@ const HITBOX_RADIUS: float = 10
 @onready var child_sprite: Sprite2D = $Rig
 @onready var child_hitbox: Sprite2D = $Hitbox
 
-var is_focused: bool
-var invincible_alarm: float
-
 # Main methods
 
 func _ready():
 	pass # Replace with function body.
 
 func _process(delta):
+	_handle_shoot_input(delta)
 	_handle_move_inputs(delta)
 	_handle_focus_input()
 	_handle_invincibility(delta)
@@ -32,12 +40,27 @@ func _process(delta):
 # Private methods
 
 func _handle_shoot_input(delta):
-	pass
+	if _stop_shooting_alarm > 0:
+		_stop_shooting_alarm -= delta
+	
+	if _is_shooting:
+		if _shoot_alarm > 0:
+			_shoot_alarm -= delta
+		else:
+			if _stop_shooting_alarm > 0:
+				_shoot_alarm = SHOOT_TIME
+			else:
+				_is_shooting = false
+			BattleManager.player_shoot_shot()
+	
+	if Input.is_action_pressed("game_confirm"):
+		_stop_shooting_alarm = STOP_SHOOTING_TIME
+		_is_shooting = true
 
 func _handle_move_inputs(delta):
 	var direction = UtilMovement.get_direction_vector()
 	
-	var speed = BASE_FOCUS_SPEED if is_focused else BASE_SPEED
+	var speed = BASE_FOCUS_SPEED if _is_focused else BASE_SPEED
 	var new_position = position + speed * delta * direction
 	new_position.x = clamp(new_position.x, 0, BattleManager.battle_area_size.x)
 	new_position.y = clamp(new_position.y, 0, BattleManager.battle_area_size.y)
@@ -53,8 +76,8 @@ func _handle_move_inputs(delta):
 		child_sprite.flip_h = direction.x < 0
 
 func _handle_focus_input():
-	is_focused = Input.is_action_pressed("game_focus")
-	child_hitbox.visible = is_focused
+	_is_focused = Input.is_action_pressed("game_focus")
+	child_hitbox.visible = _is_focused
 
 func _check_collision():
 	var bullet_list: Array[Node2D] = BattleManager.sp_enemy_bullets.get_obj_in_cells_surrounding(position)
@@ -72,8 +95,8 @@ func _check_collision():
 			var distance = (bullet.position - position).length()
 			if distance < GRAZE_RADIUS:
 				bullet.graze()
-				# print("Grazed bullet within " + str(distance))				
 				if distance < HITBOX_RADIUS:
+					print("Grazed bullet within " + str(distance))
 					bullet.destroy()
 					_handle_on_hit()
 			bullet = bullet.sp_cell_next
@@ -81,17 +104,17 @@ func _check_collision():
 	# print("Bullets in cells surrounding (" + str(cell.x) + "," + str(cell.y) + "): " + str(list_length))
 
 func _handle_on_hit():
-	if invincible_alarm > 0:
+	if _invincible_alarm > 0:
 		return
 	
 	position = Vector2(BattleManager.battle_area_size.x / 2, BattleManager.battle_area_south_y - 100)
-	invincible_alarm = INVINCIBLE_TIME
+	_invincible_alarm = INVINCIBLE_TIME
 
 func _handle_invincibility(delta: float):
-	if invincible_alarm > 0:
-		invincible_alarm -= delta
+	if _invincible_alarm > 0:
+		_invincible_alarm -= delta
 		
-		var flicker = int(10 * invincible_alarm) % 2 == 0
+		var flicker = int(10 * _invincible_alarm) % 2 == 0
 		child_sprite.self_modulate.a = 0.75 if flicker else 1
 		return
 	child_sprite.self_modulate.a = 1

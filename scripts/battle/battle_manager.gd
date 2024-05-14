@@ -1,59 +1,51 @@
 class_name BattleManager
 extends Node
 
-const _VIEWPORT_VERTICAL_PADDING: float = 20
-const _BATTLE_AREA_ASPECT_RATIO: float = 0.75
+const VIEWPORT_VERTICAL_PADDING: float = 20
+const BATTLE_AREA_ASPECT_RATIO: float = 0.75
 
-# ✨ NEW ✨ spatial partitioning
+# Spatial partitioning
 static var sp_enemy_bullets: SpatialPartitioningManager
 static var sp_player_shots: SpatialPartitioningManager
-
-# Parents
-@onready var parent_debug: Node2D = $"../Level/Node2D/TopLeft/DebugParent"
-# Other
-@onready var obj_enemy: Node2D = $"../Level/Node2D/TopLeft/Enemy"
-@onready var obj_top_left: Node2D = $"../Level/Node2D/TopLeft"
-
-# Public static variables
-# Feel free to use these
-
+# Important objects
+static var parent: Node2D
 static var obj_player: BattlePlayer
 static var obj_boss: Node2D
-
+# Important positions
+static var origin_from_center: Vector2
+static var origin_from_top_left: Vector2
+# Battle area dimensions
 static var battle_area_size: Vector2
 static var battle_area_west_x: float
 static var battle_area_east_x: float
 static var battle_area_north_y: float
 static var battle_area_south_y: float
 
-static var parent: Node2D
-static var origin_from_center: Vector2
-static var origin_from_top_left: Vector2
-
-# Private static variables
-# Do not use these
-
 # Prefabs
-static var _prefab_bullet: PackedScene
+static var _prefab_enemy_bullet: PackedScene
+static var _prefab_player_shot: PackedScene
 # Parents
 static var _parent_enemy_bullets: Node2D
 static var _parent_player_shots: Node2D
 # Other
-static var _bullet_inactive_pool: Array[BattleBullet]
 static var _enemy_list: Array[Node2D]
-
-static var _sp_cell_list = []
-static var _sp_cell_size: Vector2
-
+# Resources
 static var _sprite_bullet_default = preload("res://sprites/bullets/spr_bullet_0.png")
 static var _sprite_bullet_default_dropshadow = preload("res://sprites/bullets/spr_bullet_0_dropshadow.png")
 
 static var _debug_play: bool = true
 
+# Parents
+@onready var _parent_debug: Node2D = $"../Level/Node2D/TopLeft/DebugParent"
+# Other
+@onready var _obj_enemy: Node2D = $"../Level/Node2D/TopLeft/Enemy"
+@onready var _obj_top_left: Node2D = $"../Level/Node2D/TopLeft"
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	# Set prefabs
-	_prefab_bullet = preload("res://prefabs/prefab_bullet.tscn")
+	_prefab_enemy_bullet = preload("res://prefabs/prefab_bullet.tscn")
+	_prefab_player_shot = preload("res://prefabs/prefab_player_priest_shot.tscn")
 	
 	# Set children
 	parent = $"../Level/Node2D/TopLeft"
@@ -68,24 +60,31 @@ func _ready():
 	
 	# Set up spatial partitions
 	sp_enemy_bullets = SpatialPartitioningManager.new(
-		_prefab_bullet,
+		_prefab_enemy_bullet,
 		_parent_enemy_bullets,
-		1500,
-		origin_from_top_left
+		1500
 	)
-	# sp_player_shots = SpatialPartitioningManager.new()
+	sp_player_shots = SpatialPartitioningManager.new(
+		_prefab_player_shot,
+		_parent_player_shots,
+		100
+	)
 	
 	# Position stuff
 	obj_player.position = Vector2(battle_area_size.x / 2, battle_area_south_y - 100)
 	obj_boss.position = Vector2(battle_area_size.x / 2, battle_area_north_y + 200)
-	
-	# debug_draw_cells()
 
 func _process(_delta):
 	_debug()
 	_debug_update_ui()
 
 # Public functions
+
+static func player_shoot_shot():
+	var new_shot: BattlePlayerShot = sp_player_shots.spawn_obj(obj_player.position)
+	if new_shot == null:
+		return
+	new_shot.set_up(obj_player.position)
 
 static func shoot_bullet(
 	# Mandatory
@@ -104,7 +103,12 @@ static func shoot_bullet(
 	return new_bullet
 
 static func shoot_bullet_ring(
-	position: Vector2, direction: float, speed: float, bullet_count: int,
+	# Mandatory
+	position: Vector2,
+	direction: float,
+	speed: float,
+	bullet_count: int,
+	# Optional
 	ring_radius: float = TAU,
 	modify_bullet: Callable = func(bullet: BattleBullet, i: int): pass,
 	bullet_resource: UtilBulletResource.BulletResource = UtilBulletResource.default) -> Array[BattleBullet]:
@@ -127,20 +131,22 @@ static func shoot_bullet_ring(
 
 func _set_up_battle_area():
 	var viewport_rect_size: Vector2 = get_viewport().get_visible_rect().size
-	var battle_area_height = viewport_rect_size.y - _VIEWPORT_VERTICAL_PADDING * 2
-	var battle_area_width = battle_area_height * _BATTLE_AREA_ASPECT_RATIO
+	var battle_area_height = viewport_rect_size.y - VIEWPORT_VERTICAL_PADDING * 2
+	var battle_area_width = battle_area_height * BATTLE_AREA_ASPECT_RATIO
 	
 	battle_area_size = Vector2(battle_area_width, battle_area_height)
 	origin_from_center = viewport_rect_size / 2
 	origin_from_top_left = origin_from_center - battle_area_size / 2
-	obj_top_left.position = origin_from_top_left
+	
+	# Every object in the battle area will now be shifted here
+	_obj_top_left.position = origin_from_top_left
 	
 	battle_area_west_x = 0
 	battle_area_east_x = battle_area_width
 	battle_area_north_y = 0
 	battle_area_south_y = battle_area_height
 
-# Debug methods :: For debugging purposes
+# Debug methods
 
 func _debug():
 	if not Input.is_action_pressed("game_debug"):

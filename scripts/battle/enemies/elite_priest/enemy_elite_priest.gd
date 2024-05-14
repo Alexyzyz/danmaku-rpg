@@ -35,7 +35,7 @@ class AttackMain:
 
 class AttackSummonMinion:
 	const SQRT_2: float = sqrt(2)
-	const RANDOM_OFFSET: float = 10
+	const RANDOM_OFFSET: float = 0 # 10
 	
 	var alarm: AlarmData
 	
@@ -45,7 +45,7 @@ class AttackSummonMinion:
 	var starting_angle: float = randf_range(0, PI)
 	
 	func _init():
-		alarm = AlarmData.new(0.1, 0, _summon)
+		alarm = AlarmData.new(0.01, 0, _summon)
 		_set_up_positions()
 		player_pos = BattleManager.obj_player.position
 	
@@ -70,14 +70,14 @@ class AttackSummonMinion:
 		var random_offset: Vector2 = Vector2(randf_range(-RANDOM_OFFSET, RANDOM_OFFSET), randf_range(-RANDOM_OFFSET, RANDOM_OFFSET))
 		var minion_pos: Vector2 = minion_pos_list.pop_front()
 		
-		var new_minion = MinionShooter.new(player_pos + 120 * minion_pos + random_offset, starting_angle)
+		var new_minion = MinionShooter.new(player_pos + 100 * minion_pos + random_offset, starting_angle)
 		minion_list.push_back(new_minion)
 
 class MinionShooter:
 	var alarm: AlarmData
 	var shoot_pos: Vector2
 	var shoot_dir: float
-	var shoot_count: int = 5
+	var shoot_count: int = 7
 	
 	func _init(pos: Vector2, dir: float):
 		alarm = AlarmData.new(0.03, 0, _shoot)
@@ -98,5 +98,5 @@ class MinionShooter:
 			var bullet: BattleBullet = bullet_list[i]
 			if is_instance_valid(bullet):
 				bullet.movement.acceleration = 200
-				bullet.movement.max_speed = 200
+				bullet.movement.max_speed = 300
 		

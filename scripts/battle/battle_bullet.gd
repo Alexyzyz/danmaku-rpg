@@ -16,8 +16,8 @@ var sp_last_cell: Vector2i
 var debug_play: bool = true
 var debug_cell: Vector2i
 
-@onready var obj_sprite: Sprite2D = $Sprite
-@onready var obj_sprite_dropshadow: Sprite2D = $DropShadow
+@onready var child_sprite: Sprite2D = $Sprite
+@onready var child_sprite_dropshadow: Sprite2D = $DropShadow
 
 # Main methods
 
@@ -35,14 +35,13 @@ func set_up(
 	position: Vector2,
 	direction: float,
 	speed: float,
-	
 	# Optional
 	color: Color = Color.WHITE,
 	bullet_resource: UtilBulletResource.BulletResource = UtilBulletResource.default,
 	has_direction: bool = true):
 	
 	movement.position = position
-	movement.set_bullet_rotation(direction)
+	movement.direction_angle = direction
 	movement.speed = speed
 	self.position = position
 	
@@ -50,14 +49,14 @@ func set_up(
 
 func disable():
 	set_process(false)
-	obj_sprite.visible = false
-	obj_sprite_dropshadow.visible = false
+	child_sprite.visible = false
+	child_sprite_dropshadow.visible = false
 	movement.reset()
 
 func enable():
 	set_process(true)
-	obj_sprite.visible = true
-	obj_sprite_dropshadow.visible = true
+	child_sprite.visible = true
+	child_sprite_dropshadow.visible = true
 
 func graze():
 	graze_modulate_t = 1
@@ -90,7 +89,7 @@ func _move_wrap_around_screen():
 		movement.position.y = BattleManager.battle_area_south_y - 8
 
 func _handle_graze_animation():
-	obj_sprite.modulate = Color(1, 1, 1) - graze_modulate_t * 0.1 * Color(1, 1, 1)
+	child_sprite.modulate = Color(1, 1, 1) - graze_modulate_t * 0.1 * Color(1, 1, 1)
 	if graze_modulate_t < 0.01:
 		graze_modulate_t = 0
 		return
@@ -102,9 +101,9 @@ func _set_up_sprites(
 	color: Color,
 	has_direction: bool = true):
 	
-	obj_sprite.texture = sprite
-	obj_sprite.self_modulate = color
-	obj_sprite_dropshadow.texture = sprite_dropshadow
+	child_sprite.texture = sprite
+	child_sprite.self_modulate = color
+	child_sprite_dropshadow.texture = sprite_dropshadow
 	sprite_has_direction = has_direction
 	
 	self.color = color
