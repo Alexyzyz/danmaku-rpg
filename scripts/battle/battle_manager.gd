@@ -9,6 +9,10 @@ const _MAX_BULLET_COUNT = 1500
 const _SP_GRID_SIZE = Vector2(20, 26)
 const _SP_GRID_PADDING = 0
 
+# ✨ NEW ✨ spatial partitioning
+static var sp_enemy_bullets: SpatialPartitioningManager
+static var sp_player_shots: SpatialPartitioningManager
+
 # Prefabs
 @onready var prefab_debug_cell = preload("res://prefabs/debug/prefab_debug_cell.tscn")
 # Parents
@@ -58,35 +62,32 @@ func _ready():
 	# Set prefabs
 	_prefab_bullet = preload("res://prefabs/prefab_bullet.tscn")
 	
-	# Set parents
-	_parent_enemy_bullets = $"../Level/Node2D/TopLeft/EnemyBulletParent"
-	_parent_player_shots = $"../Level/Node2D/TopLeft/PlayerShotParent"
-	
-	var viewport_rect_size: Vector2 = get_viewport().get_visible_rect().size
-	var battle_area_height = viewport_rect_size.y - _VIEWPORT_VERTICAL_PADDING * 2
-	var battle_area_width = battle_area_height * _BATTLE_AREA_ASPECT_RATIO
-	
-	battle_area_size = Vector2(battle_area_width, battle_area_height)
-	origin_from_center = viewport_rect_size / 2
-	origin_from_top_left = origin_from_center - battle_area_size / 2
-	obj_top_left.position = origin_from_top_left
-	
-	battle_area_west_x = 0
-	battle_area_east_x = battle_area_width
-	battle_area_north_y = 0
-	battle_area_south_y = battle_area_height
-	
-	_populate_bullet_pool()
-	_set_up_sp_grid()
-	
+	# Set children
 	parent = $"../Level/Node2D/TopLeft"
 	obj_player = $"../Level/Node2D/TopLeft/Player"
 	obj_boss = $"../Level/Node2D/TopLeft/Enemy"
 	
-	obj_player.position = Vector2(battle_area_width / 2, battle_area_south_y - 100)
-	obj_boss.position = Vector2(battle_area_width / 2, battle_area_north_y + 200)
+	_parent_enemy_bullets = $"../Level/Node2D/TopLeft/EnemyBulletParent"
+	_parent_player_shots = $"../Level/Node2D/TopLeft/PlayerShotParent"
 	
-	# ebug_draw_cells()
+	# Set spatial partitions
+	sp_enemy_bullets = SpatialPartitioningManager.new(
+		_prefab_bullet,
+		_parent_enemy_bullets,
+		1500
+	)
+	# sp_player_shots = SpatialPartitioningManager.new()
+	
+	# Set up stuff
+	_set_up_battle_area()
+	_set_up_bullet_pool()
+	_set_up_sp_grid()
+	
+	# Position stuff
+	obj_player.position = Vector2(battle_area_size.x / 2, battle_area_south_y - 100)
+	obj_boss.position = Vector2(battle_area_size.x / 2, battle_area_north_y + 200)
+	
+	# debug_draw_cells()
 
 func _process(_delta):
 	_debug()
@@ -109,7 +110,7 @@ static func shoot_bullet(
 	new_bullet.enable()
 	
 	new_bullet.set_up(position, direction, speed, color, bullet_resource)
-	_add_to_collision_grid(new_bullet, get_cell(position))
+	_add_to_sp_grid(new_bullet, get_cell(position))
 	
 	return new_bullet
 
@@ -134,9 +135,6 @@ static func shoot_bullet_ring(
 	return bullet_list
 
 static func update_sp_grid(bullet: BattleBullet, new_pos: Vector2):
-	#if bullet.grid_update_turn != bullet_grid_update_current_turn:
-		#return
-	
 	# Destroy the bullet if it strayed outside the grid
 	var new_cell = get_cell(new_pos)
 	if is_cell_oob(new_cell):
@@ -150,7 +148,7 @@ static func update_sp_grid(bullet: BattleBullet, new_pos: Vector2):
 	
 	# Update if the bullet changed cell
 	_remove_bullet_from_cell(bullet, old_cell)
-	_add_to_collision_grid(bullet, new_cell)
+	_add_to_sp_grid(bullet, new_cell)
 
 static func handle_destroyed_bullet(bullet: BattleBullet):
 	var last_cell = bullet.sp_last_cell
@@ -200,7 +198,22 @@ static func is_cell_oob(cell: Vector2i) -> bool:
 
 # Private functions
 
-func _populate_bullet_pool():
+func _set_up_battle_area():
+	var viewport_rect_size: Vector2 = get_viewport().get_visible_rect().size
+	var battle_area_height = viewport_rect_size.y - _VIEWPORT_VERTICAL_PADDING * 2
+	var battle_area_width = battle_area_height * _BATTLE_AREA_ASPECT_RATIO
+	
+	battle_area_size = Vector2(battle_area_width, battle_area_height)
+	origin_from_center = viewport_rect_size / 2
+	origin_from_top_left = origin_from_center - battle_area_size / 2
+	obj_top_left.position = origin_from_top_left
+	
+	battle_area_west_x = 0
+	battle_area_east_x = battle_area_width
+	battle_area_north_y = 0
+	battle_area_south_y = battle_area_height
+
+func _set_up_bullet_pool():
 	for i in _MAX_BULLET_COUNT:
 		var new_bullet: BattleBullet = _prefab_bullet.instantiate()
 		new_bullet.name = "Bullet"
@@ -219,7 +232,7 @@ func _set_up_sp_grid():
 		battle_area_size.x / _SP_GRID_SIZE.x,
 		battle_area_size.y / _SP_GRID_SIZE.y)
 
-static func _add_to_collision_grid(bullet: BattleBullet, cell: Vector2i):	
+static func _add_to_sp_grid(bullet: BattleBullet, cell: Vector2i):	
 	bullet.sp_last_cell = cell
 	bullet.sp_cell_prev = null
 	bullet.sp_cell_next = _sp_cell_list[cell.x][cell.y]

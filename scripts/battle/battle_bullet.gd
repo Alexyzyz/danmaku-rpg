@@ -21,7 +21,7 @@ var debug_play: bool = true
 # Main methods
 
 func _process(delta):
-	if !BattleManager.debug_play:
+	if !BattleManager._debug_play:
 		return
 	
 	_move(delta)

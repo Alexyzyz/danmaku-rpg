@@ -1,7 +1,8 @@
-[gd_scene load_steps=13 format=3 uid="uid://cxds8kep1nb5a"]
+[gd_scene load_steps=14 format=3 uid="uid://cxds8kep1nb5a"]
 
 [ext_resource type="Script" path="res://scripts/battle/battle_camera_controller.gd" id="1_6ccnm"]
 [ext_resource type="Script" path="res://scripts/battle/battle_manager.gd" id="1_i1myg"]
+[ext_resource type="Script" path="res://scripts/battle/battle_spatial_partitioning_manager.gd" id="2_t5emg"]
 [ext_resource type="FontFile" uid="uid://bdek8dxu43hp4" path="res://fonts/font_renogare_regular.otf" id="4_ephc0"]
 [ext_resource type="Script" path="res://scripts/debug/battle_debug_manager.gd" id="4_hke2r"]
 [ext_resource type="PackedScene" uid="uid://bep854jo4peh" path="res://prefabs/prefab_player.tscn" id="5_5bs35"]
@@ -18,6 +19,9 @@
 
 [node name="BattleManager" type="Node" parent="."]
 script = ExtResource("1_i1myg")
+
+[node name="SpatialPartitioningManager" type="Node" parent="."]
+script = ExtResource("2_t5emg")
 
 [node name="Level" type="Node" parent="."]
 
