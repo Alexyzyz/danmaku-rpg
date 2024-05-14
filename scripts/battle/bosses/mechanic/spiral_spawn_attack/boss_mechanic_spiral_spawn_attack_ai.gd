@@ -1,96 +1,114 @@
 class_name BossMechanicSpiralSpawnAttackAI
 extends Node2D
 
-enum AttackState {
-	IDLE,
-	SPIRAL
-}
-var current_attack: AttackState = AttackState.SPIRAL
+@export var ANGLE_DELTA: float = 2.006
+@export var DISTANCE_DELTA: float = 3.955
+@export var SPIRAL_ARM_COUNT: int = 4
 
-class IdleCooldown:
-	var alarm: float
-	var timer: float = 1
+var spiral_attack_a: SpiralAttack = SpiralAttack.new()
+var spiral_attack_b: SpiralAttack = SpiralAttack.new()
+
+func _ready():
+	spiral_attack_a.reset()
+	spiral_attack_b.reset()
 	
-	func reset():
-		alarm = timer
-var idle_cooldown: IdleCooldown = IdleCooldown.new()
+	spiral_attack_a.base_hue = 0.1
+	
+	spiral_attack_b.alarm = 1.2
+	spiral_attack_b.spiral_direction = -1
+	spiral_attack_b.base_hue = 0.15
+	
+
+func _process(delta):
+	_handle_spiral_attack(spiral_attack_a, delta)
+	_handle_spiral_attack(spiral_attack_b, delta)
+
+func _handle_spiral_attack(spiral_attack: SpiralAttack, delta):
+	if spiral_attack.alarm > 0:
+		spiral_attack.alarm -= delta
+		return
+	
+	if spiral_attack.state == SpiralAttack.State.COOLDOWN:
+		spiral_attack.reset()
+		spiral_attack.state = SpiralAttack.State.ACTIVE
+		spiral_attack.alarm = spiral_attack.shoot_timer
+	
+	# Check if it's in cool down
+	if spiral_attack.bullet_index > spiral_attack.bullet_count:
+		spiral_attack.unwind_pattern()
+		spiral_attack.state = SpiralAttack.State.COOLDOWN
+		spiral_attack.alarm = spiral_attack.cooldown_timer
+		return
+	
+	# The attack
+	var curr_angle = spiral_attack.angle
+	var next_angle = curr_angle + spiral_attack.spiral_direction * ANGLE_DELTA
+	
+	var curr_distance = spiral_attack.distance
+	var next_distance = curr_distance + DISTANCE_DELTA
+	
+	var bullet_dir = -(
+		curr_distance * Vector2(cos(curr_angle), sin(curr_angle)) -
+		next_distance * Vector2(cos(next_angle), sin(next_angle))
+		)
+	
+	var bullet_color: Color = Color.from_hsv(spiral_attack.hue, 1, 1, 1)
+	spiral_attack.hue += delta / 15
+	spiral_attack.hue = fmod(spiral_attack.hue, 1.0)
+	
+	for i in SPIRAL_ARM_COUNT:
+		var ring_angle_step: float = i * (TAU / SPIRAL_ARM_COUNT)
+		var ring_angle: float = curr_angle + ring_angle_step 
+		var spawn_pos: Vector2 = position + curr_distance * Vector2(cos(ring_angle), sin(ring_angle))
+		var ring_dir: float = UtilMath.get_angle_from_vector(bullet_dir.rotated((ring_angle_step)))
+		
+		var new_bullet = BattleManager.shoot_bullet(spawn_pos, ring_dir, 5, bullet_color, UtilBulletResource.rice)
+		if new_bullet == null:
+			continue
+		new_bullet.movement.max_speed = 1000
+		spiral_attack.bullet_list.push_back(new_bullet)
+	
+	spiral_attack.angle = next_angle
+	spiral_attack.distance = next_distance
+	spiral_attack.bullet_index += 1
+
+# Subclasses
 
 class SpiralAttack:
-	const ANGLE_DELTA: float = 37
-	const DISTANCE_DELTA: float = 7
-	const SPIRAL_ARM_COUNT: int = 7
+	enum State {
+		COOLDOWN,
+		ACTIVE
+	}
 	
+	var state: State = State.COOLDOWN
 	var alarm: float
-	var timer: float = 0.0001
-	var last_spawn_pos: Array[Vector2]
+	var shoot_timer: float = 0.001
+	var cooldown_timer: float = 1
+	
+	var bullet_list: Array[BattleBullet]
 	var base_angle: float
 	var angle: float
-	var spiral_direction: int = 1
 	var base_distance: float = 32
 	var distance: float
+	var base_hue: float
+	var hue: float
+	var spiral_direction: int = 1
 	
 	var bullet_index: int
 	var bullet_count: int = 64
 	
 	func reset():
-		alarm = timer
+		alarm = shoot_timer
 		base_angle = randf_range(0, 2 * PI)
-		angle = 0
+		angle = base_angle
 		distance = base_distance
-		spiral_direction = 1 if spiral_direction == -1 else -1
+		hue = base_hue
 		bullet_index = 0
-		
-		last_spawn_pos.clear()
-		for i in SPIRAL_ARM_COUNT:
-			last_spawn_pos.push_back(Vector2.ZERO)
-var spiral_attack: SpiralAttack = SpiralAttack.new()
-
-func _ready():
-	spiral_attack.reset()
-
-func _process(delta):
-	if current_attack == AttackState.IDLE:
-		_handle_idle_cooldown(delta)
-	elif current_attack == AttackState.SPIRAL:
-		_handle_spiral_attack(delta)
-
-func _handle_spiral_attack(delta):
-	if spiral_attack.alarm > 0:
-		spiral_attack.alarm -= delta
-		return
-	spiral_attack.alarm = spiral_attack.timer
 	
-	# Prepare to cool down
-	if spiral_attack.bullet_index > spiral_attack.bullet_count:
-		current_attack = AttackState.IDLE
-		idle_cooldown.reset()
-		return
-	
-	# The attack
-	for i in spiral_attack.SPIRAL_ARM_COUNT:
-		var true_angle = spiral_attack.base_angle + spiral_attack.angle + i * (2 * PI / spiral_attack.SPIRAL_ARM_COUNT)
-		var spawn_pos: Vector2 = position + spiral_attack.distance * Vector2(cos(true_angle), sin(true_angle))
-		var new_bullet = BattleManager.shoot_bullet(spawn_pos, randf_range(0, 2 * PI), 10, UtilBulletResource.rice)
-		
-		var bullet_dir: float
-		if spiral_attack.bullet_index < 2:
-			bullet_dir = UtilMath.get_angle_from_vector(spawn_pos - position)
-			new_bullet.destroy()
-		else:
-			bullet_dir = UtilMath.get_angle_from_vector(spiral_attack.last_spawn_pos[i] - spawn_pos)
-		spiral_attack.last_spawn_pos[i] = spawn_pos
-		
-		new_bullet.movement.acceleration = 50
-		new_bullet.movement.max_speed = 1000
-		new_bullet.movement.direction = bullet_dir
-	
-	spiral_attack.angle += spiral_attack.spiral_direction * spiral_attack.ANGLE_DELTA
-	spiral_attack.distance += spiral_attack.DISTANCE_DELTA
-	spiral_attack.bullet_index += 1
-
-func _handle_idle_cooldown(delta):
-	if idle_cooldown.alarm > 0:
-		idle_cooldown.alarm -= delta
-		return
-	current_attack = AttackState.SPIRAL
-	spiral_attack.reset()
+	func unwind_pattern():
+		for i in bullet_list.size():
+			var bullet = bullet_list[i]
+			if !is_instance_valid(bullet):
+				continue
+			bullet.movement.acceleration = 50
+		bullet_list.clear()

@@ -1,23 +1,12 @@
 class_name UtilMovement
+extends Node
 
-class MovementData:
-	var position: Vector2
-	var direction: float
-	var direction_vector: Vector2
-	var last_direction: float
-
-	var speed: float
-	var max_speed: float = INF
-	var acceleration: float
-
-static func get_new_pos(movement: MovementData, delta: float) -> MovementData:
-	movement.speed = min(movement.speed + delta * movement.acceleration, movement.max_speed)
+static func get_direction_vector() -> Vector2:
+	var moved_right = 1 if Input.is_action_pressed("game_move_right") else 0
+	var moved_left = 1 if Input.is_action_pressed("game_move_left") else 0
+	var moved_up = 1 if Input.is_action_pressed("game_move_up") else 0
+	var moved_down = 1 if Input.is_action_pressed("game_move_down") else 0
 	
-	if movement.speed == 0:
-		return movement
-	if movement.direction != movement.last_direction:
-		movement.direction_vector = UtilMath.get_vector_from_angle(movement.direction)
-	
-	movement.last_direction = movement.direction
-	movement.position += movement.direction_vector * movement.speed * delta
-	return movement
+	var x_axis = moved_right - moved_left
+	var y_axis = moved_up - moved_down
+	return Vector2(x_axis, -y_axis).normalized()

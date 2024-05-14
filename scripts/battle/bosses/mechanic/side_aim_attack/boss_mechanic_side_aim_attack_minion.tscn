@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://b3j835kqxny4k"]
 
 [ext_resource type="Script" path="res://scripts/battle/bosses/mechanic/side_aim_attack/boss_mechanic_side_aim_attack_minion.gd" id="1_j3mel"]
-[ext_resource type="Texture2D" uid="uid://c04107l128a4i" path="res://sprites/spr_circle.png" id="2_njsbm"]
+[ext_resource type="Texture2D" uid="uid://c04107l128a4i" path="res://sprites/basic/spr_circle.png" id="2_njsbm"]
 
 [node name="EnemyMinion" type="Node2D"]
 script = ExtResource("1_j3mel")
