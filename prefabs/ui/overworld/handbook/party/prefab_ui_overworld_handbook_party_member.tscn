@@ -1,0 +1,46 @@
+[gd_scene load_steps=5 format=3 uid="uid://b7v8qhwnfojll"]
+
+[ext_resource type="Script" path="res://scripts/overworld/ui/ui_overworld_handbook_party_member.gd" id="1_htufu"]
+[ext_resource type="Texture2D" uid="uid://b1divjaathh7k" path="res://sprites/overworld/ui/handbook/spr_handbook_party_photo_shadow.png" id="1_qxt35"]
+[ext_resource type="Texture2D" uid="uid://bgqwgk1rbllfk" path="res://sprites/overworld/ui/handbook/spr_handbook_party_photo_1.png" id="2_8ksqk"]
+[ext_resource type="Texture2D" uid="uid://dow5e832wgfx6" path="res://sprites/overworld/ui/handbook/spr_handbook_party_photo_frame.png" id="3_nqnji"]
+
+[node name="PartyMember" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 107.5
+offset_top = 123.5
+offset_right = 147.5
+offset_bottom = 163.5
+script = ExtResource("1_htufu")
+
+[node name="PhotoShadow" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = -14.0
+offset_top = -14.0
+offset_right = 213.0
+offset_bottom = 254.0
+pivot_offset = Vector2(132, 132)
+texture = ExtResource("1_qxt35")
+
+[node name="Photo" type="Control" parent="."]
+anchors_preset = 0
+offset_right = 172.0
+offset_bottom = 203.0
+pivot_offset = Vector2(86, 101)
+
+[node name="PhotoContent" type="TextureRect" parent="Photo"]
+layout_mode = 0
+offset_left = 6.0
+offset_top = 10.0
+offset_right = 166.0
+offset_bottom = 170.0
+texture = ExtResource("2_8ksqk")
+expand_mode = 1
+
+[node name="PhotoFrame" type="TextureRect" parent="Photo"]
+texture_filter = 1
+layout_mode = 0
+offset_right = 172.0
+offset_bottom = 203.0
+texture = ExtResource("3_nqnji")

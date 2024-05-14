@@ -1,0 +1,12 @@
+[gd_scene load_steps=2 format=3 uid="uid://dmmnmh2tccwit"]
+
+[ext_resource type="Texture2D" uid="uid://csfdruxoxpex7" path="res://sprites/battle/players/priest/spr_battle_player_priest_shots.png" id="1_yyuvb"]
+
+[node name="PlayerShot" type="Node2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 1
+scale = Vector2(2, 2)
+texture = ExtResource("1_yyuvb")
+region_enabled = true
+region_rect = Rect2(0, 0, 16, 16)

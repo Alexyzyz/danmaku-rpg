@@ -1,0 +1,33 @@
+[gd_scene load_steps=3 format=3 uid="uid://ctvewpscjp5j4"]
+
+[ext_resource type="FontFile" uid="uid://bdek8dxu43hp4" path="res://fonts/font_renogare_regular.otf" id="1_l4gxc"]
+[ext_resource type="Script" path="res://scripts/overworld/ui/ui_overworld_handbook_party_label.gd" id="1_yorhm"]
+
+[node name="PartyMemberLabel" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 129.5
+offset_top = 384.5
+offset_right = 169.5
+offset_bottom = 424.5
+script = ExtResource("1_yorhm")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+offset_right = 167.0
+offset_bottom = 72.0
+theme_override_constants/separation = 0
+
+[node name="MemberName" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("1_l4gxc")
+theme_override_font_sizes/font_size = 32
+text = "Lucas"
+
+[node name="MemberRole" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.489622, 0.489622, 0.489622, 1)
+theme_override_fonts/font = ExtResource("1_l4gxc")
+theme_override_font_sizes/font_size = 20
+text = "Primary shot"
