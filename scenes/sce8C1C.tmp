@@ -1,0 +1,214 @@
+[gd_scene load_steps=12 format=3 uid="uid://by51wg8284mb8"]
+
+[ext_resource type="SpriteFrames" uid="uid://cg8wc6xi0iasu" path="res://sprites/overworld/spr_frames_ow_player.tres" id="1_tcr5w"]
+[ext_resource type="Script" path="res://scripts/overworld/overworld_manager.gd" id="1_wja36"]
+[ext_resource type="Script" path="res://scripts/overworld/ui/ui_overworld_handbook.gd" id="2_evjeq"]
+[ext_resource type="Texture2D" uid="uid://7dpdtpaj3v8m" path="res://sprites/basic/spr_rect_rounded.png" id="2_tci07"]
+[ext_resource type="FontFile" uid="uid://bdek8dxu43hp4" path="res://fonts/font_renogare_regular.otf" id="5_6pgvf"]
+[ext_resource type="PackedScene" uid="uid://b7v8qhwnfojll" path="res://prefabs/ui/overworld/handbook/party/prefab_ui_overworld_handbook_party_member.tscn" id="6_rutkp"]
+[ext_resource type="Texture2D" uid="uid://owjo3gjhuhm0" path="res://sprites/overworld/ui/handbook/spr_handbook_party_photo_2.png" id="7_ebhgb"]
+[ext_resource type="PackedScene" uid="uid://ctvewpscjp5j4" path="res://prefabs/ui/overworld/handbook/party/prefab_ui_overworld_handbook_party_member_label.tscn" id="7_pojfy"]
+[ext_resource type="Texture2D" uid="uid://bd4j8amf2t7jl" path="res://sprites/overworld/ui/handbook/spr_handbook_party_photo_3.png" id="8_bqbvl"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_iuxv3"]
+albedo_color = Color(0.2736, 0.36, 0.2304, 1)
+metallic_specular = 0.0
+
+[sub_resource type="QuadMesh" id="QuadMesh_a76pw"]
+material = SubResource("StandardMaterial3D_iuxv3")
+
+[node name="Root" type="Node"]
+
+[node name="OverworldManager" type="Node" parent="." node_paths=PackedStringArray("overworld_ui_menu")]
+script = ExtResource("1_wja36")
+overworld_ui_menu = NodePath("../Control/Handbook")
+
+[node name="Node3D" type="Node3D" parent="."]
+
+[node name="Geometry" type="Node3D" parent="Node3D"]
+
+[node name="Ground" type="MeshInstance3D" parent="Node3D/Geometry"]
+transform = Transform3D(3, 0, 0, 0, -1.31134e-07, 3, 0, -3, -1.31134e-07, 0, 0, 0)
+mesh = SubResource("QuadMesh_a76pw")
+skeleton = NodePath("../../..")
+
+[node name="Player" type="Node3D" parent="Node3D"]
+
+[node name="Sprite3D" type="AnimatedSprite3D" parent="Node3D/Player"]
+offset = Vector2(0, 45)
+pixel_size = 0.004
+billboard = 2
+alpha_cut = 2
+texture_filter = 0
+sprite_frames = ExtResource("1_tcr5w")
+autoplay = "default"
+frame_progress = 0.402049
+
+[node name="Camera3D" type="Camera3D" parent="Node3D/Player"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.185108, 0.5)
+
+[node name="OmniLight3D" type="OmniLight3D" parent="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.127418, 0.163127, -0.218868)
+omni_range = 16.0
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Handbook" type="Control" parent="Control"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2_evjeq")
+
+[node name="BookmarkParent" type="Control" parent="Control/Handbook"]
+layout_mode = 1
+anchors_preset = 0
+offset_left = -551.0
+offset_top = -248.0
+offset_right = -394.0
+offset_bottom = 289.0
+
+[node name="PartyBookmark" type="Control" parent="Control/Handbook/BookmarkParent"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -40.0
+offset_bottom = 40.0
+grow_horizontal = 0
+
+[node name="Back" type="NinePatchRect" parent="Control/Handbook/BookmarkParent/PartyBookmark"]
+modulate = Color(0.56, 0.2128, 0.2128, 1)
+layout_mode = 1
+offset_left = -189.0
+offset_top = 27.0
+offset_right = 26.0
+offset_bottom = 122.0
+texture = ExtResource("2_tci07")
+patch_margin_left = 32
+patch_margin_top = 32
+patch_margin_right = 32
+patch_margin_bottom = 32
+
+[node name="Text" type="Label" parent="Control/Handbook/BookmarkParent/PartyBookmark"]
+layout_mode = 0
+offset_left = -189.0
+offset_top = 27.0
+offset_right = 26.0
+offset_bottom = 122.0
+theme_override_fonts/font = ExtResource("5_6pgvf")
+theme_override_font_sizes/font_size = 32
+text = "Party"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Background" type="NinePatchRect" parent="Control/Handbook"]
+self_modulate = Color(0.796243, 0.796243, 0.796243, 1)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -447.5
+offset_top = -268.5
+offset_right = 447.5
+offset_bottom = 268.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_tci07")
+patch_margin_left = 32
+patch_margin_top = 32
+patch_margin_right = 32
+patch_margin_bottom = 32
+
+[node name="PartyMenu" type="Control" parent="Control/Handbook/Background"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 1.0
+offset_top = 1.0
+offset_right = 1.0
+offset_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PartyMember1" parent="Control/Handbook/Background/PartyMenu" instance=ExtResource("6_rutkp")]
+offset_left = 74.5
+offset_top = 143.5
+offset_right = 114.5
+offset_bottom = 183.5
+rotation = -0.0824481
+
+[node name="PartyMember2" parent="Control/Handbook/Background/PartyMenu" instance=ExtResource("6_rutkp")]
+offset_left = 367.5
+offset_top = 105.5
+offset_right = 407.5
+offset_bottom = 145.5
+rotation = 0.0510109
+
+[node name="PhotoContent" parent="Control/Handbook/Background/PartyMenu/PartyMember2" index="1"]
+texture = ExtResource("7_ebhgb")
+
+[node name="PartyMember3" parent="Control/Handbook/Background/PartyMenu" instance=ExtResource("6_rutkp")]
+offset_left = 621.5
+offset_top = 135.5
+offset_right = 661.5
+offset_bottom = 175.5
+rotation = -0.120415
+
+[node name="PhotoContent" parent="Control/Handbook/Background/PartyMenu/PartyMember3" index="1"]
+texture = ExtResource("8_bqbvl")
+
+[node name="PartyMemberLabel1" parent="Control/Handbook/Background/PartyMenu" instance=ExtResource("7_pojfy")]
+offset_left = 99.5
+offset_top = 386.5
+offset_right = 139.5
+offset_bottom = 426.5
+
+[node name="PartyMemberLabel2" parent="Control/Handbook/Background/PartyMenu" instance=ExtResource("7_pojfy")]
+offset_left = 366.5
+offset_top = 372.5
+offset_right = 406.5
+offset_bottom = 412.5
+
+[node name="MemberName" parent="Control/Handbook/Background/PartyMenu/PartyMemberLabel2/VBoxContainer" index="0"]
+text = "Kenzie
+"
+
+[node name="MemberRole" parent="Control/Handbook/Background/PartyMenu/PartyMemberLabel2/VBoxContainer" index="1"]
+text = "Secondary shot"
+
+[node name="PartyMemberLabel3" parent="Control/Handbook/Background/PartyMenu" instance=ExtResource("7_pojfy")]
+offset_left = 688.5
+offset_top = 382.5
+offset_right = 728.5
+offset_bottom = 422.5
+
+[node name="MemberName" parent="Control/Handbook/Background/PartyMenu/PartyMemberLabel3/VBoxContainer" index="0"]
+text = "Felix"
+
+[node name="MemberRole" parent="Control/Handbook/Background/PartyMenu/PartyMemberLabel3/VBoxContainer" index="1"]
+text = "Passive"
+
+[editable path="Control/Handbook/Background/PartyMenu/PartyMember1"]
+[editable path="Control/Handbook/Background/PartyMenu/PartyMember2"]
+[editable path="Control/Handbook/Background/PartyMenu/PartyMember3"]
+[editable path="Control/Handbook/Background/PartyMenu/PartyMemberLabel1"]
+[editable path="Control/Handbook/Background/PartyMenu/PartyMemberLabel2"]
+[editable path="Control/Handbook/Background/PartyMenu/PartyMemberLabel3"]
