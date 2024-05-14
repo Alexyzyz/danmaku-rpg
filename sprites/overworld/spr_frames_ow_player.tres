@@ -1,0 +1,25 @@
+[gd_resource type="SpriteFrames" load_steps=4 format=3 uid="uid://cg8wc6xi0iasu"]
+
+[ext_resource type="Texture2D" uid="uid://bp88o0f207to7" path="res://sprites/overworld/spr_ow_player_sheet.png" id="1_2klod"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wc12l"]
+atlas = ExtResource("1_2klod")
+region = Rect2(0, 0, 80, 90)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_k3owb"]
+atlas = ExtResource("1_2klod")
+region = Rect2(80, 0, 80, 90)
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wc12l")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_k3owb")
+}],
+"loop": true,
+"name": &"default",
+"speed": 7.0
+}]
