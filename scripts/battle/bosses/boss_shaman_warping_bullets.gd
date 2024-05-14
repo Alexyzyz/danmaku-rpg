@@ -20,5 +20,5 @@ func _handle_ring_attack(attack: RingAttack, delta: float):
 	var angle_step: float = TAU / (attack.bullets_in_ring - 1)
 	var base_angle: float = randf_range(0, angle_step)
 	for i in attack.bullets_in_ring:
-		BattleManager.shoot_bullet(position, base_angle + i * angle_step, 50, UtilBulletResource.default)
+		BattleManager.shoot_bullet(position, base_angle + i * angle_step, 50, Color.WHITE, UtilBulletResource.default)
 	

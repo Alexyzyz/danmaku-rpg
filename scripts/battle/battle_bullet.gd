@@ -14,6 +14,7 @@ var sp_cell_next: BattleBullet
 var sp_last_cell: Vector2i
 
 var debug_play: bool = true
+var debug_cell: Vector2i
 
 @onready var obj_sprite: Sprite2D = $Sprite
 @onready var obj_sprite_dropshadow: Sprite2D = $DropShadow
@@ -30,7 +31,12 @@ func _process(delta):
 # Public methods
 
 func set_up(
-	position: Vector2, direction: float, speed: float,
+	# Mandatory
+	position: Vector2,
+	direction: float,
+	speed: float,
+	
+	# Optional
 	color: Color = Color.WHITE,
 	bullet_resource: UtilBulletResource.BulletResource = UtilBulletResource.default,
 	has_direction: bool = true):
@@ -57,27 +63,31 @@ func graze():
 	graze_modulate_t = 1
 
 func destroy():
-	BattleManager.handle_destroyed_bullet(self)
+	sp_manager.handle_destroyed_obj(self)
 
 # Private methods
 
 func _move(delta: float):
 	movement.update(delta)
+	# _move_wrap_around_screen()
 	
-	#if movement.position.x < BattleManager.battle_area_west_x:
-		#movement.position.x = BattleManager.battle_area_east_x - 8
-	#elif movement.position.x > BattleManager.battle_area_east_x:
-		#movement.position.x = BattleManager.battle_area_west_x + 8
-	#
-	#if movement.position.y > BattleManager.battle_area_south_y:
-		#movement.position.y = BattleManager.battle_area_north_y + 8
-	#elif movement.position.y < BattleManager.battle_area_north_y:
-		#movement.position.y = BattleManager.battle_area_south_y - 8
-	
-	BattleManager.update_sp_grid(self, movement.position)
+	if sp_manager != null:
+		sp_manager.update_sp_grid(self, movement.position)
+		debug_cell = sp_manager.get_cell(position)
 	
 	position = movement.position
 	rotation = movement.direction_angle + PI / 2
+
+func _move_wrap_around_screen():
+	if movement.position.x < BattleManager.battle_area_west_x:
+		movement.position.x = BattleManager.battle_area_east_x - 8
+	elif movement.position.x > BattleManager.battle_area_east_x:
+		movement.position.x = BattleManager.battle_area_west_x + 8
+	
+	if movement.position.y > BattleManager.battle_area_south_y:
+		movement.position.y = BattleManager.battle_area_north_y + 8
+	elif movement.position.y < BattleManager.battle_area_north_y:
+		movement.position.y = BattleManager.battle_area_south_y - 8
 
 func _handle_graze_animation():
 	obj_sprite.modulate = Color(1, 1, 1) - graze_modulate_t * 0.1 * Color(1, 1, 1)

@@ -3,6 +3,7 @@ class_name SpatialPartitioningManager
 const _SP_GRID_SIZE = Vector2(20, 26)
 const _SP_GRID_PADDING = 0
 
+var _sp_grid_origin: Vector2
 var _sp_cell_list = []
 var _sp_cell_size: Vector2
 
@@ -13,14 +14,38 @@ var _obj_max_count: int
 
 # Main methods
 
-func _init(prefab: PackedScene, parent: Node, max_count: int):
+func _init(prefab: PackedScene, parent: Node, max_count: int, origin: Vector2):
 	_obj_prefab = prefab
 	_obj_parent = parent
 	_obj_max_count = max_count
+	_sp_grid_origin = origin
 	
 	_set_up_sp_grid()
+	_populate_obj_pool()
 
 # Public methods
+
+func spawn_obj(position: Vector2) -> Node2D:
+	var cell = get_cell(position)
+	if is_cell_oob(cell):
+		return
+	
+	var obj = _obj_inactive_pool.pop_front()
+	if obj == null:
+		return
+	
+	obj.enable()
+	_add_to_sp_grid(obj, get_cell(position))
+	return obj
+
+func handle_destroyed_obj(obj: Node2D):
+	var last_cell = obj.sp_last_cell
+	
+	if !is_cell_oob(last_cell):
+		_remove_obj_from_cell(obj, last_cell)
+	
+	obj.disable()
+	_obj_inactive_pool.push_back(obj)
 
 func update_sp_grid(obj: Node2D, new_pos: Vector2):
 	# Destroy the object if it strayed outside the grid
@@ -37,15 +62,6 @@ func update_sp_grid(obj: Node2D, new_pos: Vector2):
 	# Update if the object changed cell
 	_remove_obj_from_cell(obj, old_cell)
 	_add_to_sp_grid(obj, new_cell)
-
-func handle_destroyed_obj(obj: Node2D):
-	var last_cell = obj.sp_last_cell
-	
-	if !is_cell_oob(last_cell):
-		_remove_obj_from_cell(obj, last_cell)
-	
-	obj.disable()
-	_obj_inactive_pool.push_back(obj)
 
 func get_obj_in_cell(cell: Vector2i) -> Node2D:
 	if is_cell_oob(cell):
@@ -84,6 +100,9 @@ func is_cell_oob(cell: Vector2i) -> bool:
 		or cell.x > _SP_GRID_SIZE.x + _SP_GRID_PADDING \
 		or cell.y > _SP_GRID_SIZE.y + _SP_GRID_PADDING
 
+func get_active_obj_count() -> int:
+	return _obj_max_count - _obj_inactive_pool.size()
+
 # Private methods
 
 func _set_up_sp_grid():
@@ -100,8 +119,9 @@ func _set_up_sp_grid():
 func _populate_obj_pool():
 	for i in _obj_max_count:
 		var new_obj: Node2D = _obj_prefab.instantiate()
-		new_obj.name = "Object"
 		new_obj.set_process(false)
+		new_obj.name = "Object"
+		new_obj.sp_manager = self
 		
 		_obj_parent.add_child(new_obj)
 		_obj_inactive_pool.push_back(new_obj)
@@ -124,4 +144,3 @@ func _remove_obj_from_cell(obj: Node2D, old_cell: Vector2i):
 	
 	if _sp_cell_list[old_cell.x][old_cell.y] == obj:
 		_sp_cell_list[old_cell.x][old_cell.y] = obj.sp_cell_next
-

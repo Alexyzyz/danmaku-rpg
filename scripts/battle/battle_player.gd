@@ -57,8 +57,8 @@ func _handle_focus_input():
 	child_hitbox.visible = is_focused
 
 func _check_collision():
-	var bullet_list: Array[BattleBullet] = BattleManager.get_bullet_in_cells_surrounding(position)
-	var cell = BattleManager.get_cell(position)
+	var bullet_list: Array[Node2D] = BattleManager.sp_enemy_bullets.get_obj_in_cells_surrounding(position)
+	var cell = BattleManager.sp_enemy_bullets.get_cell(position)
 	
 	var list_length = 0
 	
@@ -92,7 +92,6 @@ func _handle_invincibility(delta: float):
 		invincible_alarm -= delta
 		
 		var flicker = int(10 * invincible_alarm) % 2 == 0
-		print("flicker :: " + str(flicker))
 		child_sprite.self_modulate.a = 0.75 if flicker else 1
 		return
 	child_sprite.self_modulate.a = 1
