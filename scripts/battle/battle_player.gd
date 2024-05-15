@@ -9,7 +9,7 @@ const STOP_SHOOTING_TIME: float = 0.4
 const SHOOT_TIME: float = 0.06
 
 const GRAZE_RADIUS: float = 50
-const HITBOX_RADIUS: float = 1
+const HITBOX_RADIUS: float = 2
 
 var _invincible_alarm: float
 var _stop_shooting_alarm: float
@@ -17,6 +17,9 @@ var _shoot_alarm: float
 
 var _is_shooting: bool
 var _is_focused: bool
+
+var _debug_grazed_count: int
+var _debug_closest_distance: float
 
 # Prefabs
 @onready var prefab_shot: PackedScene = preload("res://prefabs/prefab_player_priest_shot.tscn")
@@ -96,9 +99,17 @@ func _check_collision():
 			if distance < GRAZE_RADIUS:
 				bullet.graze()
 				if distance < HITBOX_RADIUS:
-					print("Grazed bullet within " + str(distance))
+					# print("Grazed bullet within " + str(distance))
 					bullet.destroy()
 					_handle_on_hit()
+			
+			if distance < _debug_closest_distance:
+				_debug_closest_distance = distance
+			_debug_grazed_count += 1
+			if _debug_grazed_count > 100:
+				_debug_grazed_count = 0
+				print("Closest distance: " + str(_debug_closest_distance))
+				_debug_closest_distance = INF
 			bullet = bullet.sp_cell_next
 	
 	# print("Bullets in cells surrounding (" + str(cell.x) + "," + str(cell.y) + "): " + str(list_length))

@@ -69,6 +69,7 @@ func destroy():
 func _move(delta: float):
 	movement.update(delta)
 	# _move_wrap_around_screen()
+	# _move_bounce_on_screen()
 	
 	if sp_manager != null:
 		sp_manager.update_sp_grid(self, movement.position)
@@ -87,6 +88,17 @@ func _move_wrap_around_screen():
 		movement.position.y = BattleManager.battle_area_north_y + 8
 	elif movement.position.y < BattleManager.battle_area_north_y:
 		movement.position.y = BattleManager.battle_area_south_y - 8
+
+func _move_bounce_on_screen():
+	if movement.position.x < BattleManager.battle_area_west_x or \
+		movement.position.x > BattleManager.battle_area_east_x:
+		movement.position.x = clamp(movement.position.x, BattleManager.battle_area_west_x, BattleManager.battle_area_east_x)
+		movement.direction.x *= -1
+	
+	if movement.position.y > BattleManager.battle_area_south_y or \
+		movement.position.y < BattleManager.battle_area_north_y:
+		movement.position.y = clamp(movement.position.y, BattleManager.battle_area_north_y, BattleManager.battle_area_south_y)
+		movement.direction.y *= -1
 
 func _handle_graze_animation():
 	child_sprite.modulate = Color(1, 1, 1) - graze_modulate_t * 0.1 * Color(1, 1, 1)

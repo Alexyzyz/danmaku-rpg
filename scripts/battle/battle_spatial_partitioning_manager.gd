@@ -1,6 +1,6 @@
 class_name SpatialPartitioningManager
 
-const _SP_GRID_SIZE = Vector2(20, 26)
+const _SP_GRID_SIZE = Vector2i(20, 26)
 const _SP_GRID_PADDING = 0
 
 var _sp_cell_list = []
@@ -13,7 +13,13 @@ var _obj_max_count: int
 
 # Main methods
 
-func _init(prefab: PackedScene, parent: Node, max_count: int):
+func _init(
+	# Mandatory
+	prefab: PackedScene,
+	parent: Node,
+	max_count: int,
+	# Optional
+	partitions: Vector2i = _SP_GRID_SIZE):
 	_obj_prefab = prefab
 	_obj_parent = parent
 	_obj_max_count = max_count
