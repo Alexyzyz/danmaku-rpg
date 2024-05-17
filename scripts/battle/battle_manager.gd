@@ -93,7 +93,7 @@ static func shoot_bullet(
 	speed: float,
 	# Optional
 	color: Color = Color.WHITE,
-	bullet_resource: UtilBulletResource.BulletResource = UtilBulletResource.default) -> BattleBullet:
+	bullet_resource: BulletResource = UtilBulletResource.default) -> BattleBullet:
 	
 	var new_bullet: BattleBullet = sp_enemy_bullets.spawn_obj(position)
 	if new_bullet == null:
@@ -110,8 +110,8 @@ static func shoot_bullet_ring(
 	bullet_count: int,
 	# Optional
 	ring_radius: float = TAU,
-	modify_bullet: Callable = func(bullet: BattleBullet, i: int): pass,
-	bullet_resource: UtilBulletResource.BulletResource = UtilBulletResource.default) -> Array[BattleBullet]:
+	bullet_resource: BulletResource = UtilBulletResource.default,
+	modify_bullet: Callable = func(bullet: BattleBullet, i: int): pass) -> Array[BattleBullet]:
 	
 	var bullet_list: Array[BattleBullet] = []
 	var angle_step: float = ring_radius / bullet_count
@@ -122,7 +122,8 @@ static func shoot_bullet_ring(
 	var curr_angle: float = direction - angle_offset
 	for i in bullet_count:
 		var new_bullet = shoot_bullet(position, curr_angle, speed, Color.WHITE, bullet_resource)
-		modify_bullet.call(new_bullet, i)
+		if modify_bullet != null:
+			modify_bullet.call(new_bullet, i)
 		bullet_list.push_back(new_bullet)
 		curr_angle += angle_step
 	return bullet_list

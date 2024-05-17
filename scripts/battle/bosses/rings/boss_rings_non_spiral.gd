@@ -21,7 +21,7 @@ func _shoot(delta):
 	spiral_attack.alarm = 0.01
 	spiral_attack.angle += 1
 	
-	BattleManager.shoot_bullet(position, spiral_attack.angle, 50, UtilBulletResource.rice)
+	BattleManager.shoot_bullet(position, spiral_attack.angle, 50, Color.WHITE, UtilBulletResource.rice)
 
 func _shoot_ring(delta):
 	if ring_attack.alarm > 0:

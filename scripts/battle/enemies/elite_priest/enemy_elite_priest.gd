@@ -3,18 +3,13 @@ extends Node2D
 
 var _attack_main: AttackMain = AttackMain.new()
 
-# Main methods
+# Public methods
 
-func _ready():
+func set_up(shooter: Node2D):
 	pass
 
-func _process(delta):
+func tick(delta):
 	_attack_main.tick(delta)
-
-# Private methods
-
-func _check_if_shot_hit():
-	pass
 
 # Subclasses
 
@@ -77,7 +72,7 @@ class MinionShooter:
 	var alarm: AlarmData
 	var shoot_pos: Vector2
 	var shoot_dir: float
-	var shoot_count: int = 7
+	var shoot_count: int = 4
 	
 	func _init(pos: Vector2, dir: float):
 		alarm = AlarmData.new(0.03, 0, _shoot)

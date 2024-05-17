@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://cxds8kep1nb5a"]
+[gd_scene load_steps=15 format=3 uid="uid://cxds8kep1nb5a"]
 
 [ext_resource type="Script" path="res://scripts/battle/battle_camera_controller.gd" id="1_6ccnm"]
 [ext_resource type="Script" path="res://scripts/battle/battle_manager.gd" id="1_i1myg"]
@@ -6,10 +6,13 @@
 [ext_resource type="Script" path="res://scripts/debug/battle_debug_manager.gd" id="4_hke2r"]
 [ext_resource type="PackedScene" uid="uid://bep854jo4peh" path="res://prefabs/prefab_player.tscn" id="5_5bs35"]
 [ext_resource type="PackedScene" uid="uid://wddf8klhn20w" path="res://prefabs/prefab_bullet.tscn" id="5_weer3"]
-[ext_resource type="PackedScene" uid="uid://c4le3e26auqau" path="res://prefabs/prefab_enemy.tscn" id="7_mf3wx"]
+[ext_resource type="Script" path="res://scripts/battle/battle_enemy.gd" id="7_f2m5r"]
+[ext_resource type="Script" path="res://scripts/battle/enemies/nature_triangle_aimer/enemy_nature_triangle_aimer.gd" id="7_j37ai"]
 [ext_resource type="PackedScene" uid="uid://dxxatojl4t8tc" path="res://prefabs/debug/prefab_debug_cell.tscn" id="7_mj0hw"]
-[ext_resource type="Script" path="res://scripts/battle/enemies/elite_priest/enemy_elite_priest.gd" id="8_7m7l3"]
+[ext_resource type="Texture2D" uid="uid://dkfvfmk8mtabn" path="res://sprites/bullets/spr_bullet_0_dropshadow.png" id="9_j3kd0"]
+[ext_resource type="Texture2D" uid="uid://ss04wv2uapdv" path="res://sprites/battle/enemies/spr_battle_enemy_priest.png" id="9_xx1gm"]
 [ext_resource type="PackedScene" uid="uid://dmmnmh2tccwit" path="res://prefabs/prefab_player_priest_shot.tscn" id="12_3fub8"]
+[ext_resource type="Texture2D" uid="uid://w5xyi1f2rh4l" path="res://sprites/battle/ui/spr_ui_battle_enemy_health_bar.png" id="13_bko2n"]
 
 [sub_resource type="QuadMesh" id="QuadMesh_dwefp"]
 
@@ -100,13 +103,42 @@ modulate = Color(0, 0, 0, 0.0470588)
 [node name="Player" parent="Level/Node2D/TopLeft" instance=ExtResource("5_5bs35")]
 position = Vector2(289, 583)
 
-[node name="Enemy" parent="Level/Node2D/TopLeft" instance=ExtResource("7_mf3wx")]
+[node name="Enemy" type="Node2D" parent="Level/Node2D/TopLeft"]
+position = Vector2(293, 162)
+script = ExtResource("7_f2m5r")
 
-[node name="Enemy2" parent="Level/Node2D/TopLeft" instance=ExtResource("7_mf3wx")]
-position = Vector2(498, 219)
+[node name="Behavior" type="Node2D" parent="Level/Node2D/TopLeft/Enemy"]
+script = ExtResource("7_j37ai")
 
-[node name="Behavior" parent="Level/Node2D/TopLeft/Enemy2" index="0"]
-script = ExtResource("8_7m7l3")
+[node name="DropShadow" type="Sprite2D" parent="Level/Node2D/TopLeft/Enemy"]
+self_modulate = Color(1, 1, 1, 0.25098)
+scale = Vector2(24, 24)
+texture = ExtResource("9_j3kd0")
+
+[node name="Sprite" type="Sprite2D" parent="Level/Node2D/TopLeft/Enemy"]
+scale = Vector2(0.16, 0.16)
+texture = ExtResource("9_xx1gm")
+
+[node name="Control" type="Control" parent="Level/Node2D/TopLeft/Enemy"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="HealthBar" type="TextureProgressBar" parent="Level/Node2D/TopLeft/Enemy/Control"]
+layout_mode = 0
+offset_left = -100.0
+offset_top = -100.0
+offset_right = 100.0
+offset_bottom = 100.0
+step = 0.1
+value = 100.0
+fill_mode = 5
+nine_patch_stretch = true
+texture_under = ExtResource("13_bko2n")
+texture_progress = ExtResource("13_bko2n")
+tint_under = Color(1, 1, 1, 0.27451)
+tint_progress = Color(0.405333, 0.8, 0.16, 1)
 
 [node name="EnemyBulletParent" type="Node2D" parent="Level/Node2D/TopLeft"]
 
@@ -116,5 +148,3 @@ visible = false
 [node name="PlayerShotParent" type="Node2D" parent="Level/Node2D/TopLeft"]
 
 [node name="PlayerShot" parent="Level/Node2D/TopLeft/PlayerShotParent" instance=ExtResource("12_3fub8")]
-
-[editable path="Level/Node2D/TopLeft/Enemy2"]

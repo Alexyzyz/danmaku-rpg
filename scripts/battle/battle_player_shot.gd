@@ -8,6 +8,8 @@ var sp_cell_prev: BattlePlayerShot
 var sp_cell_next: BattlePlayerShot
 var sp_last_cell: Vector2i
 
+var damage: float = 0.5
+
 @onready var child_sprite: Sprite2D = $Sprite
 
 # Main methods

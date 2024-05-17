@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://by51wg8284mb8"]
+[gd_scene load_steps=18 format=3 uid="uid://by51wg8284mb8"]
 
 [ext_resource type="SpriteFrames" uid="uid://cg8wc6xi0iasu" path="res://sprites/overworld/spr_frames_ow_player.tres" id="1_tcr5w"]
 [ext_resource type="Script" path="res://scripts/overworld/overworld_manager.gd" id="1_wja36"]
@@ -12,7 +12,7 @@
 [ext_resource type="PackedScene" uid="uid://ctvewpscjp5j4" path="res://prefabs/ui/overworld/handbook/party/prefab_ui_overworld_handbook_party_member_label.tscn" id="7_pojfy"]
 [ext_resource type="Texture2D" uid="uid://bd4j8amf2t7jl" path="res://sprites/overworld/ui/handbook/spr_handbook_party_photo_3.png" id="8_bqbvl"]
 [ext_resource type="Texture2D" uid="uid://bbxcvh0rto3lb" path="res://sprites/basic/spr_rect.png" id="11_bfp4b"]
-[ext_resource type="Shader" path="res://shaders/shader_mask.gdshader" id="11_btk1u"]
+[ext_resource type="Shader" path="res://shaders/shader_dialogue_box_edge.gdshader" id="11_btk1u"]
 [ext_resource type="Texture2D" uid="uid://dlddw8di0tn86" path="res://sprites/dialogue_portraits/spr_dialogue_portrait_luke_1_bored.png" id="12_3222q"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_iuxv3"]
@@ -22,11 +22,9 @@ metallic_specular = 0.0
 [sub_resource type="QuadMesh" id="QuadMesh_a76pw"]
 material = SubResource("StandardMaterial3D_iuxv3")
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_yjaly"]
-shader = ExtResource("11_btk1u")
-
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_juspl"]
 shader = ExtResource("11_btk1u")
+shader_parameter/scale = Vector2(1, 1)
 
 [node name="Root" type="Node"]
 
@@ -75,32 +73,9 @@ script = ExtResource("4_ub2jg")
 [node name="Back" type="Sprite2D" parent="Node2D/DialogueParent/Dialogue"]
 visible = false
 self_modulate = Color(0, 0, 0, 1)
-scale = Vector2(1e-05, 1e-05)
 texture = ExtResource("11_bfp4b")
 
 [node name="PolygonParent" type="Node2D" parent="Node2D/DialogueParent/Dialogue"]
-
-[node name="Polygon2D" type="Polygon2D" parent="Node2D/DialogueParent/Dialogue/PolygonParent"]
-visible = false
-clip_children = 2
-polygon = PackedVector2Array(-7, 117, 185, 155, 319, 111, 409, 134, 497, 92, 492, 29, 480, -123, 338, -240, 89, -188, 71, 1, -51, 35)
-
-[node name="Label" type="Label" parent="Node2D/DialogueParent/Dialogue"]
-offset_left = -383.0
-offset_top = -34.0
-offset_right = 349.0
-offset_bottom = 35.0
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_fonts/font = ExtResource("5_6pgvf")
-theme_override_font_sizes/font_size = 24
-text = "The more I think about it, the more
-I feel like coming here was a bad idea."
-
-[node name="Sprite" type="Sprite2D" parent="Node2D/DialogueParent/Dialogue"]
-material = SubResource("ShaderMaterial_yjaly")
-position = Vector2(358, -34)
-scale = Vector2(1.05606, 1.05606)
-texture = ExtResource("12_3222q")
 
 [node name="Control" type="Control" parent="."]
 layout_mode = 3

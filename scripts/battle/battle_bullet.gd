@@ -1,6 +1,8 @@
 class_name BattleBullet
 extends Node2D
 
+const HITBOX_RADIUS: float = 2
+
 var color: Color
 var movement: MovementData = MovementData.new()
 var sprite_has_direction: bool = false
@@ -12,6 +14,7 @@ var sp_manager: SpatialPartitioningManager
 var sp_cell_prev: BattleBullet
 var sp_cell_next: BattleBullet
 var sp_last_cell: Vector2i
+var last_position: Vector2
 
 var debug_play: bool = true
 var debug_cell: Vector2i
@@ -37,7 +40,7 @@ func set_up(
 	speed: float,
 	# Optional
 	color: Color = Color.WHITE,
-	bullet_resource: UtilBulletResource.BulletResource = UtilBulletResource.default,
+	bullet_resource: BulletResource = UtilBulletResource.default,
 	has_direction: bool = true):
 	
 	movement.position = position
@@ -64,9 +67,25 @@ func graze():
 func destroy():
 	sp_manager.handle_destroyed_obj(self)
 
+func get_rect():
+	return Rect2(
+		position.x - HITBOX_RADIUS,
+		position.y - HITBOX_RADIUS,
+		position.x + HITBOX_RADIUS,
+		position.y + HITBOX_RADIUS)
+
+func get_rect_midway_pos():
+	var midway_pos: Vector2 = (position - last_position) / 2
+	return Rect2(
+		midway_pos.x - HITBOX_RADIUS,
+		midway_pos.y - HITBOX_RADIUS,
+		midway_pos.x + HITBOX_RADIUS,
+		midway_pos.y + HITBOX_RADIUS)
+
 # Private methods
 
 func _move(delta: float):
+	last_position = movement.position
 	movement.update(delta)
 	# _move_wrap_around_screen()
 	# _move_bounce_on_screen()

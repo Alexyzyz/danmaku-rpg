@@ -4,12 +4,12 @@ extends Node2D
 const BASE_SPEED: float = 400
 const BASE_FOCUS_SPEED: float = 150
 
-const INVINCIBLE_TIME: float = 3
-const STOP_SHOOTING_TIME: float = 0.4
+const INVINCIBLE_TIME: float = 0 # 3
+const STOP_SHOOTING_TIME: float = 0.2
 const SHOOT_TIME: float = 0.06
 
 const GRAZE_RADIUS: float = 50
-const HITBOX_RADIUS: float = 2
+const HITBOX_RADIUS: float = 3
 
 var _invincible_alarm: float
 var _stop_shooting_alarm: float
@@ -38,7 +38,15 @@ func _process(delta):
 	_handle_focus_input()
 	_handle_invincibility(delta)
 	_check_collision()
-	pass
+
+# Public methods
+
+func get_rect():
+	return Rect2(
+		position.x - HITBOX_RADIUS,
+		position.y - HITBOX_RADIUS,
+		position.x + HITBOX_RADIUS,
+		position.y + HITBOX_RADIUS)
 
 # Private methods
 
@@ -86,20 +94,28 @@ func _check_collision():
 	var bullet_list: Array[Node2D] = BattleManager.sp_enemy_bullets.get_obj_in_cells_surrounding(position)
 	var cell = BattleManager.sp_enemy_bullets.get_cell(position)
 	
-	var list_length = 0
-	
-	for i in bullet_list.size():
-		var bullet = bullet_list[i]
+	for bullet in bullet_list:
 		while bullet != null:
-			list_length += 1
-			if list_length > 1000:
-				print("[WARNING] Bullet count: " + str(list_length))
+			
+			# PHASE 1 ✦ Bounding box check
+			
+			if !get_rect().intersects(bullet.get_rect()) and \
+				!get_rect().intersects(bullet.get_rect_midway_pos()):
+				bullet = bullet.sp_cell_next
+				continue
+			
+			# PHASE 2 ✦ Distance check
 			
 			var distance = (bullet.position - position).length()
 			if distance < GRAZE_RADIUS:
 				bullet.graze()
-				if distance < HITBOX_RADIUS:
-					# print("Grazed bullet within " + str(distance))
+			
+			if distance < HITBOX_RADIUS + bullet.HITBOX_RADIUS:
+				bullet.destroy()
+				_handle_on_hit()
+			else:
+				var midway_distance = (bullet.last_position - position).length()
+				if midway_distance < HITBOX_RADIUS + bullet.HITBOX_RADIUS:
 					bullet.destroy()
 					_handle_on_hit()
 			
@@ -110,6 +126,7 @@ func _check_collision():
 				_debug_grazed_count = 0
 				print("Closest distance: " + str(_debug_closest_distance))
 				_debug_closest_distance = INF
+			
 			bullet = bullet.sp_cell_next
 	
 	# print("Bullets in cells surrounding (" + str(cell.x) + "," + str(cell.y) + "): " + str(list_length))
