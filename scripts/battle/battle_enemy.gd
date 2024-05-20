@@ -12,10 +12,12 @@ var max_health: float = 100
 # Main methods
 
 func _ready():
-	_child_behavior.set_up(self)
+	if _child_behavior.has_method("set_up"):
+		_child_behavior.set_up(self)
 
 func _process(delta):
-	_child_behavior.tick(delta)
+	if _child_behavior.has_method("set_up"):
+		_child_behavior.tick(delta)
 	_check_if_hit()
 
 # Private methods

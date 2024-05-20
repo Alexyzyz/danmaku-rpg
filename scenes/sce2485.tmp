@@ -9,7 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://wddf8klhn20w" path="res://prefabs/prefab_bullet.tscn" id="5_weer3"]
 [ext_resource type="PackedScene" uid="uid://c4le3e26auqau" path="res://prefabs/prefab_enemy.tscn" id="7_mf3wx"]
 [ext_resource type="PackedScene" uid="uid://dxxatojl4t8tc" path="res://prefabs/debug/prefab_debug_cell.tscn" id="7_mj0hw"]
-[ext_resource type="Script" path="res://scripts/battle/enemies/elite_priest/enemy_elite_priest.gd" id="8_2bgox"]
+[ext_resource type="Script" path="res://scripts/battle/enemies/elite_priest/enemy_elite_priest.gd" id="8_7m7l3"]
 [ext_resource type="PackedScene" uid="uid://dmmnmh2tccwit" path="res://prefabs/prefab_player_priest_shot.tscn" id="12_3fub8"]
 
 [sub_resource type="QuadMesh" id="QuadMesh_dwefp"]
@@ -107,7 +107,7 @@ position = Vector2(289, 583)
 position = Vector2(498, 219)
 
 [node name="Behavior" parent="Level/Node2D/TopLeft/Enemy2" index="0"]
-script = ExtResource("8_2bgox")
+script = ExtResource("8_7m7l3")
 
 [node name="EnemyBulletParent" type="Node2D" parent="Level/Node2D/TopLeft"]
 

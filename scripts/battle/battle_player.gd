@@ -91,8 +91,8 @@ func _handle_focus_input():
 	child_hitbox.visible = _is_focused
 
 func _check_collision():
-	var bullet_list: Array[Node2D] = BattleManager.sp_enemy_bullets.get_obj_in_cells_surrounding(position)
-	var cell = BattleManager.sp_enemy_bullets.get_cell(position)
+	var bullet_list: Array[Node2D] = [] #BattleManager.sp_enemy_bullets.get_obj_in_cells_surrounding(position)
+	var cell = null # BattleManager.sp_enemy_bullets.get_cell(position)
 	
 	for bullet in bullet_list:
 		while bullet != null:

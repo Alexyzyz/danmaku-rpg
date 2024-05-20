@@ -8,6 +8,10 @@ extends Node2D
 var spiral_attack_a: SpiralAttack = SpiralAttack.new()
 var spiral_attack_b: SpiralAttack = SpiralAttack.new()
 
+@onready var _bullet_texture: Texture2D = preload("res://sprites/bullets/spr_bullet_1.png")
+
+# Main methods
+
 func _ready():
 	spiral_attack_a.reset()
 	spiral_attack_b.reset()
@@ -59,13 +63,17 @@ func _handle_spiral_attack(spiral_attack: SpiralAttack, delta):
 	for i in SPIRAL_ARM_COUNT:
 		var ring_angle_step: float = i * (TAU / SPIRAL_ARM_COUNT)
 		var ring_angle: float = curr_angle + ring_angle_step 
-		var spawn_pos: Vector2 = position + curr_distance * Vector2(cos(ring_angle), sin(ring_angle))
+		var spawn_pos: Vector2 = get_parent().position + curr_distance * Vector2(cos(ring_angle), sin(ring_angle))
 		var ring_dir: float = UtilMath.get_angle_from_vector(bullet_dir.rotated((ring_angle_step)))
 		
-		var new_bullet = BattleManager.shoot_bullet(spawn_pos, ring_dir, 5, bullet_color, UtilBulletResource.rice)
+		var new_bullet: Bullet = BattleBulletManager.shoot_bullet(
+			spawn_pos,
+			ring_dir,
+			5,
+			_bullet_texture)
 		if new_bullet == null:
 			continue
-		new_bullet.movement.max_speed = 1000
+		new_bullet.max_speed = 1000
 		spiral_attack.bullet_list.push_back(new_bullet)
 	
 	spiral_attack.angle = next_angle
@@ -85,7 +93,7 @@ class SpiralAttack:
 	var shoot_timer: float = 0.001
 	var cooldown_timer: float = 1
 	
-	var bullet_list: Array[BattleBullet]
+	var bullet_list: Array[Bullet]
 	var base_angle: float
 	var angle: float
 	var base_distance: float = 32
@@ -106,9 +114,8 @@ class SpiralAttack:
 		bullet_index = 0
 	
 	func unwind_pattern():
-		for i in bullet_list.size():
-			var bullet = bullet_list[i]
+		for bullet in bullet_list:
 			if !is_instance_valid(bullet):
 				continue
-			bullet.movement.acceleration = 50
+			bullet.acceleration = 50
 		bullet_list.clear()

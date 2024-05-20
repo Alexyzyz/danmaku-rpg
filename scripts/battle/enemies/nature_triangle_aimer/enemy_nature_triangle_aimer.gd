@@ -67,6 +67,8 @@ class AttackTriangle:
 	var bullet_speed: float
 	var bullet_resource: BulletResource
 	
+	var _bullet_texture: Texture2D = preload("res://sprites/bullets/spr_bullet_0.png")
+	
 	func _init(
 		shooter: Node2D,
 		shoot_direction: float,
@@ -94,13 +96,13 @@ class AttackTriangle:
 			return
 		
 		var spread_angle: float = spread_angle_max * (float(shoot_index) / float(shoot_count))
-		BattleManager.shoot_bullet_ring(
+		BattleBulletManager.shoot_bullet_ring(
 			shooter.position,
 			shoot_direction,
 			bullet_speed,
+			_bullet_texture,
 			shoot_index,
-			spread_angle,
-			bullet_resource)
+			spread_angle)
 		
 		shoot_index += 1
 	

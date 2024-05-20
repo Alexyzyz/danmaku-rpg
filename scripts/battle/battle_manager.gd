@@ -5,7 +5,8 @@ const VIEWPORT_VERTICAL_PADDING: float = 20
 const BATTLE_AREA_ASPECT_RATIO: float = 0.75
 
 # Spatial partitioning
-static var sp_enemy_bullets: SpatialPartitioningManager
+# NOTE: We may eventually do away with the spatial partitioning class
+# or at least refactor it to be more general and work with non-node objects
 static var sp_player_shots: SpatialPartitioningManager
 # Important objects
 static var parent: Node2D
@@ -59,11 +60,6 @@ func _ready():
 	_set_up_battle_area()
 	
 	# Set up spatial partitions
-	sp_enemy_bullets = SpatialPartitioningManager.new(
-		_prefab_enemy_bullet,
-		_parent_enemy_bullets,
-		1500
-	)
 	sp_player_shots = SpatialPartitioningManager.new(
 		_prefab_player_shot,
 		_parent_player_shots,
@@ -76,7 +72,6 @@ func _ready():
 
 func _process(_delta):
 	_debug()
-	_debug_update_ui()
 
 # Public functions
 
@@ -85,48 +80,6 @@ static func player_shoot_shot():
 	if new_shot == null:
 		return
 	new_shot.set_up(obj_player.position)
-
-static func shoot_bullet(
-	# Mandatory
-	position: Vector2,
-	direction: float,
-	speed: float,
-	# Optional
-	color: Color = Color.WHITE,
-	bullet_resource: BulletResource = UtilBulletResource.default) -> BattleBullet:
-	
-	var new_bullet: BattleBullet = sp_enemy_bullets.spawn_obj(position)
-	if new_bullet == null:
-		return
-	
-	new_bullet.set_up(position, direction, speed, color, bullet_resource)
-	return new_bullet
-
-static func shoot_bullet_ring(
-	# Mandatory
-	position: Vector2,
-	direction: float,
-	speed: float,
-	bullet_count: int,
-	# Optional
-	ring_radius: float = TAU,
-	bullet_resource: BulletResource = UtilBulletResource.default,
-	modify_bullet: Callable = func(bullet: BattleBullet, i: int): pass) -> Array[BattleBullet]:
-	
-	var bullet_list: Array[BattleBullet] = []
-	var angle_step: float = ring_radius / bullet_count
-	
-	var angle_offset_even_offset: float = angle_step / 2 if bullet_count % 2 == 0 else angle_step
-	var angle_offset: float = ring_radius - angle_step * (bullet_count / 2) - angle_offset_even_offset
-	
-	var curr_angle: float = direction - angle_offset
-	for i in bullet_count:
-		var new_bullet = shoot_bullet(position, curr_angle, speed, Color.WHITE, bullet_resource)
-		if modify_bullet != null:
-			modify_bullet.call(new_bullet, i)
-		bullet_list.push_back(new_bullet)
-		curr_angle += angle_step
-	return bullet_list
 
 # Private functions
 
@@ -167,6 +120,3 @@ func _debug():
 	
 	if Input.is_action_just_pressed("debug_quit"):
 		get_tree().quit()
-
-func _debug_update_ui():
-	BattleDebugManager.update_bullet_count(sp_enemy_bullets.get_active_obj_count())

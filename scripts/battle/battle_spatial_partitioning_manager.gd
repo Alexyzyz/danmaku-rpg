@@ -20,6 +20,7 @@ func _init(
 	max_count: int,
 	# Optional
 	partitions: Vector2i = _SP_GRID_SIZE):
+	
 	_obj_prefab = prefab
 	_obj_parent = parent
 	_obj_max_count = max_count

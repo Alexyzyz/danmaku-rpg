@@ -3,6 +3,8 @@ extends Node2D
 
 var _attack_main: AttackMain = AttackMain.new()
 
+@onready var _bullet_texture: Texture2D = preload("res://sprites/bullets/spr_bullet_0.png")
+
 # Public methods
 
 func set_up(shooter: Node2D):
@@ -74,6 +76,8 @@ class MinionShooter:
 	var shoot_dir: float
 	var shoot_count: int = 4
 	
+	var _bullet_texture: Texture2D = preload("res://sprites/bullets/spr_bullet_0.png")
+	
 	func _init(pos: Vector2, dir: float):
 		alarm = AlarmData.new(0.03, 0, _shoot)
 		shoot_pos = pos
@@ -87,11 +91,16 @@ class MinionShooter:
 			return
 		shoot_count -= 1
 		
-		var bullet_list: Array[BattleBullet] = BattleManager.shoot_bullet_ring(shoot_pos, shoot_dir, 3, 3)
+		var bullet_list: Array[Bullet] = BattleBulletManager.shoot_bullet_ring(
+			shoot_pos,
+			shoot_dir,
+			3,
+			_bullet_texture,
+			3)
 		
 		for i in bullet_list.size():
-			var bullet: BattleBullet = bullet_list[i]
+			var bullet: Bullet = bullet_list[i]
 			if is_instance_valid(bullet):
-				bullet.movement.acceleration = 200
-				bullet.movement.max_speed = 300
+				bullet.acceleration = 200
+				bullet.max_speed = 300
 		

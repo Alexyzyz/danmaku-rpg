@@ -1,15 +1,16 @@
-[gd_scene load_steps=13 format=3 uid="uid://cxds8kep1nb5a"]
+[gd_scene load_steps=14 format=3 uid="uid://cxds8kep1nb5a"]
 
 [ext_resource type="Script" path="res://scripts/battle/battle_camera_controller.gd" id="1_6ccnm"]
 [ext_resource type="Script" path="res://scripts/battle/battle_manager.gd" id="1_i1myg"]
 [ext_resource type="Script" path="res://scripts/battle/battle_bullet_manager.gd" id="2_5f0pi"]
+[ext_resource type="Texture2D" uid="uid://cgbmwjoy8kl3e" path="res://sprites/bullets/spr_bullet_0.png" id="3_rq3sw"]
 [ext_resource type="FontFile" uid="uid://bdek8dxu43hp4" path="res://fonts/font_renogare_regular.otf" id="4_ephc0"]
 [ext_resource type="Script" path="res://scripts/debug/battle_debug_manager.gd" id="4_hke2r"]
 [ext_resource type="PackedScene" uid="uid://bep854jo4peh" path="res://prefabs/prefab_player.tscn" id="5_5bs35"]
 [ext_resource type="PackedScene" uid="uid://wddf8klhn20w" path="res://prefabs/prefab_bullet.tscn" id="5_weer3"]
 [ext_resource type="PackedScene" uid="uid://c4le3e26auqau" path="res://prefabs/prefab_enemy.tscn" id="7_mf3wx"]
 [ext_resource type="PackedScene" uid="uid://dxxatojl4t8tc" path="res://prefabs/debug/prefab_debug_cell.tscn" id="7_mj0hw"]
-[ext_resource type="Script" path="res://scripts/battle/enemies/elite_priest/enemy_elite_priest.gd" id="8_2bgox"]
+[ext_resource type="Script" path="res://scripts/battle/enemies/elite_priest/enemy_elite_priest.gd" id="8_7m7l3"]
 [ext_resource type="PackedScene" uid="uid://dmmnmh2tccwit" path="res://prefabs/prefab_player_priest_shot.tscn" id="12_3fub8"]
 
 [sub_resource type="QuadMesh" id="QuadMesh_dwefp"]
@@ -18,6 +19,10 @@
 
 [node name="BattleManager" type="Node" parent="."]
 script = ExtResource("1_i1myg")
+
+[node name="BulletManager" type="Node2D" parent="."]
+script = ExtResource("2_5f0pi")
+_bullet_image = ExtResource("3_rq3sw")
 
 [node name="Level" type="Node" parent="."]
 
@@ -107,7 +112,7 @@ position = Vector2(289, 583)
 position = Vector2(498, 219)
 
 [node name="Behavior" parent="Level/Node2D/TopLeft/Enemy2" index="0"]
-script = ExtResource("8_2bgox")
+script = ExtResource("8_7m7l3")
 
 [node name="EnemyBulletParent" type="Node2D" parent="Level/Node2D/TopLeft"]
 
@@ -117,9 +122,6 @@ visible = false
 [node name="PlayerShotParent" type="Node2D" parent="Level/Node2D/TopLeft"]
 
 [node name="PlayerShot" parent="Level/Node2D/TopLeft/PlayerShotParent" instance=ExtResource("12_3fub8")]
-
-[node name="BulletManager" type="Node2D" parent="Level/Node2D/TopLeft"]
-script = ExtResource("2_5f0pi")
 
 [editable path="Level/Node2D/TopLeft/Enemy"]
 [editable path="Level/Node2D/TopLeft/Enemy2"]
