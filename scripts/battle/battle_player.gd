@@ -4,12 +4,12 @@ extends Node2D
 const BASE_SPEED: float = 400
 const BASE_FOCUS_SPEED: float = 150
 
-const INVINCIBLE_TIME: float = 0 # 3
+const INVINCIBLE_TIME: float = 3
 const STOP_SHOOTING_TIME: float = 0.2
 const SHOOT_TIME: float = 0.06
 
 const GRAZE_RADIUS: float = 50
-const HITBOX_RADIUS: float = 3
+const HITBOX_RADIUS: float = 100 # 3
 
 var _invincible_alarm: float
 var _stop_shooting_alarm: float
@@ -91,10 +91,11 @@ func _handle_focus_input():
 	child_hitbox.visible = _is_focused
 
 func _check_collision():
-	var bullet_list: Array[Node2D] = [] #BattleManager.sp_enemy_bullets.get_obj_in_cells_surrounding(position)
-	var cell = null # BattleManager.sp_enemy_bullets.get_cell(position)
+	var bullet_list: Array[Bullet] = BattleBulletManager.sp_get_bullet_in_cells_surrounding(position)
+	var cell = BattleBulletManager.sp_get_cell(position)
 	
-	for bullet in bullet_list:
+	for head_bullet in bullet_list:
+		var bullet: Bullet = head_bullet
 		while bullet != null:
 			
 			# PHASE 1 ✦ Bounding box check
@@ -124,7 +125,7 @@ func _check_collision():
 			_debug_grazed_count += 1
 			if _debug_grazed_count > 100:
 				_debug_grazed_count = 0
-				print("Closest distance: " + str(_debug_closest_distance))
+				# print("Closest distance: " + str(_debug_closest_distance))
 				_debug_closest_distance = INF
 			
 			bullet = bullet.sp_cell_next
@@ -135,7 +136,7 @@ func _handle_on_hit():
 	if _invincible_alarm > 0:
 		return
 	
-	position = Vector2(BattleManager.battle_area_size.x / 2, BattleManager.battle_area_south_y - 100)
+	# position = Vector2(BattleManager.battle_area_size.x / 2, BattleManager.battle_area_south_y - 100)
 	_invincible_alarm = INVINCIBLE_TIME
 
 func _handle_invincibility(delta: float):

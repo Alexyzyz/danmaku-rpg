@@ -1,12 +1,9 @@
 class_name BossSandboxHitboxCheckAttack
 extends Node2D
 
-class LaneAttack:
-	var alarm: float
-	var timer: float = 0.2
-	var bullet_count: int = 16
-	var wing_direction: int = 1
 var _lane_attack_a: LaneAttack = LaneAttack.new()
+
+@onready var _bullet_texture = preload("res://sprites/bullets/spr_bullet_0.png")
 
 # Main methods
 
@@ -32,11 +29,19 @@ func _handle_lane_attack(delta: float):
 		else:
 			bullet.movement.speed = 80 + _lane_attack_a.bullet_count * 10 - i * 10
 	
-	BattleManager.shoot_bullet_ring(
+	BattleBulletManager.shoot_bullet_ring(
 		position,
 		aim_direction,
 		120,
+		_bullet_texture,
 		_lane_attack_a.bullet_count,
 		PI / 4,
-		modify_bullet,
-		UtilBulletResource.default)
+		modify_bullet)
+
+# Subclasses
+
+class LaneAttack:
+	var alarm: float
+	var timer: float = 0.2
+	var bullet_count: int = 16
+	var wing_direction: int = 1
