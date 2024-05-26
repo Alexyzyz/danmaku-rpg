@@ -9,7 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://wddf8klhn20w" path="res://prefabs/prefab_bullet.tscn" id="5_weer3"]
 [ext_resource type="PackedScene" uid="uid://c4le3e26auqau" path="res://prefabs/prefab_enemy.tscn" id="7_mf3wx"]
 [ext_resource type="PackedScene" uid="uid://dxxatojl4t8tc" path="res://prefabs/debug/prefab_debug_cell.tscn" id="7_mj0hw"]
-[ext_resource type="Script" path="res://scripts/battle/enemies/elite_priest/enemy_elite_priest.gd" id="8_dviwi"]
+[ext_resource type="Script" path="res://scripts/battle/bosses/boss_shaman_warping_bullets.gd" id="8_285my"]
 [ext_resource type="PackedScene" uid="uid://dmmnmh2tccwit" path="res://prefabs/prefab_player_priest_shot.tscn" id="12_3fub8"]
 
 [sub_resource type="QuadMesh" id="QuadMesh_dwefp"]
@@ -103,11 +103,15 @@ position = Vector2(289, 583)
 
 [node name="Enemy" parent="Level/Node2D/TopLeft" instance=ExtResource("7_mf3wx")]
 
+[node name="Behavior" parent="Level/Node2D/TopLeft/Enemy" index="0"]
+script = ExtResource("8_285my")
+
 [node name="Enemy2" parent="Level/Node2D/TopLeft" instance=ExtResource("7_mf3wx")]
 position = Vector2(498, 219)
+script = null
 
 [node name="Behavior" parent="Level/Node2D/TopLeft/Enemy2" index="0"]
-script = ExtResource("8_dviwi")
+script = ExtResource("8_285my")
 
 [node name="EnemyBulletParent" type="Node2D" parent="Level/Node2D/TopLeft"]
 

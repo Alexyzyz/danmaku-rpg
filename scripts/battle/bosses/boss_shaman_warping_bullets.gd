@@ -1,26 +1,48 @@
 class_name BossShamanWarpingBulletsAttack
 extends Node2D
 
-var ring_attack_a: RingAttack = RingAttack.new()
+var _ring_attack: RingAttack = RingAttack.new(get_parent())
 
 @onready var _bullet_texture: Texture2D = preload("res://sprites/bullets/spr_bullet_0.png")
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	_handle_ring_attack(ring_attack_a, delta)
+func _process(delta: float):
+	# _handle_ring_attack(delta)
+	if Input.is_action_pressed("debug_e"):
+		_ring_attack.tick(delta)
+	pass
 
 # Private functions
 
-func _handle_ring_attack(attack: RingAttack, delta: float):
-	if !Input.is_action_just_pressed("debug_e"):
+func _handle_ring_attack(delta: float):
+	if !Input.is_action_pressed("debug_e"):
 		return
-	
-	# print(position)
-	BattleBulletManager.shoot_bullet_ring(get_parent().position, randf_range(0, TAU), 200, _bullet_texture, 32)
+	_ring_attack.shoot()
 
 # Subclasses
 
 class RingAttack:
-	var alarm: float
-	var timer: float = 0.1
-	var bullets_in_ring: int = 32
+	var _parent: Node2D
+	
+	var _alarm: float
+	var _timer: float = 0.01
+	var _angle: float
+	var _bullets_in_ring: int = 32
+	
+	func _init(parent: Node2D):
+		_parent = parent
+	
+	func tick(delta: float):
+		if _alarm > 0:
+			_alarm -= delta
+			return
+		_alarm = _timer
+		shoot()
+	
+	func shoot():
+		BattleBulletManager.shoot_bullet_ring(
+			_parent.position,
+			UtilMath.get_angle_from_vector(BattleManager.obj_player.position - _parent.position) + _angle,
+			300,
+			11,
+			UtilBulletResource.default)
+		_angle += TAU / 127

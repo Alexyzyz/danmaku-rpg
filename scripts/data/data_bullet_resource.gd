@@ -1,8 +1,8 @@
 class_name BulletResource
 
-var sprite: Resource
-var dropshadow_sprite: Resource
+var texture: Texture2D
+var texture_drop_shadow: Texture2D
 	
-func _init(sprite: Resource, dropshadow_sprite: Resource):
-	self.sprite = sprite
-	self.dropshadow_sprite = dropshadow_sprite
+func _init(p_texture: Texture2D, p_texture_drop_shadow: Texture2D):
+	texture = p_texture
+	texture_drop_shadow = p_texture_drop_shadow

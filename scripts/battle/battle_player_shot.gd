@@ -19,11 +19,11 @@ func _process(delta):
 
 # Public methods
 
-func set_up(position: Vector2):
-	movement.position = position
+func set_up(p_position: Vector2):
+	movement.position = p_position
 	movement.direction_angle = -PI / 2
 	movement.speed = 700
-	self.position = position
+	position = p_position
 
 func disable():
 	set_process(false)

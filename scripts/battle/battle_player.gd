@@ -9,7 +9,7 @@ const STOP_SHOOTING_TIME: float = 0.2
 const SHOOT_TIME: float = 0.06
 
 const GRAZE_RADIUS: float = 50
-const HITBOX_RADIUS: float = 100 # 3
+const HITBOX_RADIUS: float = 3
 
 var _invincible_alarm: float
 var _stop_shooting_alarm: float
@@ -46,7 +46,7 @@ func get_rect():
 		position.x - HITBOX_RADIUS,
 		position.y - HITBOX_RADIUS,
 		position.x + HITBOX_RADIUS,
-		position.y + HITBOX_RADIUS)
+		position.y + HITBOX_RADIUS).abs()
 
 # Private methods
 
@@ -93,44 +93,36 @@ func _handle_focus_input():
 func _check_collision():
 	var bullet_list: Array[Bullet] = BattleBulletManager.sp_get_bullet_in_cells_surrounding(position)
 	var cell = BattleBulletManager.sp_get_cell(position)
+	var debug_bullet_count: int = 0
 	
 	for head_bullet in bullet_list:
 		var bullet: Bullet = head_bullet
 		while bullet != null:
 			
 			# PHASE 1 ✦ Bounding box check
-			
 			if !get_rect().intersects(bullet.get_rect()) and \
 				!get_rect().intersects(bullet.get_rect_midway_pos()):
 				bullet = bullet.sp_cell_next
 				continue
 			
 			# PHASE 2 ✦ Distance check
-			
-			var distance = (bullet.position - position).length()
+			var distance: float = (bullet.position - position).length()
 			if distance < GRAZE_RADIUS:
 				bullet.graze()
+				pass
 			
 			if distance < HITBOX_RADIUS + bullet.HITBOX_RADIUS:
 				bullet.destroy()
 				_handle_on_hit()
 			else:
-				var midway_distance = (bullet.last_position - position).length()
+				var midway_distance = (bullet.prev_position - position).length()
 				if midway_distance < HITBOX_RADIUS + bullet.HITBOX_RADIUS:
 					bullet.destroy()
 					_handle_on_hit()
 			
-			if distance < _debug_closest_distance:
-				_debug_closest_distance = distance
-			_debug_grazed_count += 1
-			if _debug_grazed_count > 100:
-				_debug_grazed_count = 0
-				# print("Closest distance: " + str(_debug_closest_distance))
-				_debug_closest_distance = INF
-			
 			bullet = bullet.sp_cell_next
 	
-	# print("Bullets in cells surrounding (" + str(cell.x) + "," + str(cell.y) + "): " + str(list_length))
+	# print("Bullets in cells surrounding (" + str(cell.x) + "," + str(cell.y) + "): " + str(debug_bullet_count))
 
 func _handle_on_hit():
 	if _invincible_alarm > 0:
@@ -143,8 +135,8 @@ func _handle_invincibility(delta: float):
 	if _invincible_alarm > 0:
 		_invincible_alarm -= delta
 		
-		var flicker = int(10 * _invincible_alarm) % 2 == 0
-		child_sprite.self_modulate.a = 0.75 if flicker else 1
+		var do_flicker: bool = int(10 * _invincible_alarm) % 2 == 0
+		child_sprite.self_modulate.a = 0.75 if do_flicker else 1.0
 		return
 	child_sprite.self_modulate.a = 1
 	

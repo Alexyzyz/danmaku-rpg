@@ -35,20 +35,20 @@ func _process(delta):
 
 func set_up(
 	# Mandatory
-	position: Vector2,
-	direction: float,
-	speed: float,
+	p_position: Vector2,
+	p_direction: float,
+	p_speed: float,
 	# Optional
-	color: Color = Color.WHITE,
-	bullet_resource: BulletResource = UtilBulletResource.default,
-	has_direction: bool = true):
+	p_color: Color = Color.WHITE,
+	p_bullet_resource: BulletResource = UtilBulletResource.default,
+	p_has_direction: bool = true):
 	
-	movement.position = position
-	movement.direction_angle = direction
-	movement.speed = speed
-	self.position = position
+	movement.position = p_position
+	movement.direction_angle = p_direction
+	movement.speed = p_speed
+	position = p_position
 	
-	_set_up_sprites(bullet_resource.sprite, bullet_resource.dropshadow_sprite, color, has_direction)
+	_set_up_sprites(p_bullet_resource.sprite, p_bullet_resource.dropshadow_sprite, p_color, p_has_direction)
 
 func disable():
 	set_process(false)
@@ -127,14 +127,14 @@ func _handle_graze_animation():
 	graze_modulate_t = lerpf(graze_modulate_t, 0, 0.2)
 
 func _set_up_sprites(
-	sprite: Resource,
-	sprite_dropshadow: Resource,
-	color: Color,
-	has_direction: bool = true):
+	p_sprite: Resource,
+	p_sprite_dropshadow: Resource,
+	p_color: Color,
+	p_has_direction: bool = true):
 	
-	child_sprite.texture = sprite
-	child_sprite.self_modulate = color
-	child_sprite_dropshadow.texture = sprite_dropshadow
-	sprite_has_direction = has_direction
+	child_sprite.texture = p_sprite
+	child_sprite.self_modulate = p_color
+	child_sprite_dropshadow.texture = p_sprite_dropshadow
+	sprite_has_direction = p_has_direction
 	
-	self.color = color
+	color = p_color

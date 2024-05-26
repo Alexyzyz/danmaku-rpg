@@ -6,8 +6,8 @@ var attack_main: AttackMain
 
 # Public methods
 
-func set_up(shooter: Node2D):
-	self.shooter = shooter
+func set_up(p_shooter: Node2D):
+	shooter = p_shooter
 	attack_main = AttackMain.new(shooter)
 
 func tick(delta: float):
@@ -21,8 +21,8 @@ class AttackMain:
 	var alarm_b: AlarmData
 	var tick_list: Array = []
 	
-	func _init(shooter: Node2D):
-		self.shooter = shooter
+	func _init(p_shooter: Node2D):
+		shooter = p_shooter
 		alarm_a = AlarmData.new(3, 0, _shoot_triangle_slow)
 		alarm_b = AlarmData.new(1.7, 1, _shoot_triangle_fast)
 	
@@ -70,21 +70,21 @@ class AttackTriangle:
 	var _bullet_texture: Texture2D = preload("res://sprites/bullets/spr_bullet_0.png")
 	
 	func _init(
-		shooter: Node2D,
-		shoot_direction: float,
-		shoot_count: int,
-		shoot_time: float,
-		spread_angle_max: float,
-		bullet_speed: float,
-		bullet_resource: BulletResource):
+		p_shooter: Node2D,
+		p_shoot_direction: float,
+		p_shoot_count: int,
+		p_shoot_time: float,
+		p_spread_angle_max: float,
+		p_bullet_speed: float,
+		p_bullet_resource: BulletResource):
 		
-		self.shooter = shooter
-		self.shoot_direction = shoot_direction
-		self.shoot_count = shoot_count
-		self.shoot_time = shoot_time
-		self.spread_angle_max = spread_angle_max
-		self.bullet_speed = bullet_speed
-		self.bullet_resource = bullet_resource
+		shooter = p_shooter
+		shoot_direction = p_shoot_direction
+		shoot_count = p_shoot_count
+		shoot_time = p_shoot_time
+		spread_angle_max = p_spread_angle_max
+		bullet_speed = p_bullet_speed
+		bullet_resource = p_bullet_resource
 		
 		alarm = AlarmData.new(shoot_time, 0, _shoot_triangles)
 	
@@ -100,8 +100,8 @@ class AttackTriangle:
 			shooter.position,
 			shoot_direction,
 			bullet_speed,
-			_bullet_texture,
 			shoot_index,
+			UtilBulletResource.default,
 			spread_angle)
 		
 		shoot_index += 1

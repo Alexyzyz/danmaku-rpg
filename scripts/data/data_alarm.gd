@@ -9,11 +9,16 @@ var stop: bool
 
 # Main methods
 
-func _init(timer: float, alarm: float, on_ring: Callable, play_once: bool = false):
-	self.alarm = alarm
-	self.timer = timer
-	self.on_ring = on_ring
-	self.play_once = play_once
+func _init(
+	p_timer: float,
+	p_alarm: float,
+	p_on_ring: Callable,
+	p_play_once: bool = false):
+	
+	alarm = p_alarm
+	timer = p_timer
+	on_ring = p_on_ring
+	play_once = p_play_once
 
 # Public methods
 

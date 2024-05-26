@@ -7,7 +7,7 @@ var _attack_main: AttackMain = AttackMain.new()
 
 # Public methods
 
-func set_up(shooter: Node2D):
+func set_up(p_shooter: Node2D):
 	pass
 
 func tick(delta):
@@ -95,8 +95,8 @@ class MinionShooter:
 			shoot_pos,
 			shoot_dir,
 			3,
-			_bullet_texture,
-			3)
+			3,
+			UtilBulletResource.default)
 		
 		for i in bullet_list.size():
 			var bullet: Bullet = bullet_list[i]
