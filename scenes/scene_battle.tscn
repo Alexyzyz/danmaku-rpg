@@ -1,18 +1,27 @@
-[gd_scene load_steps=13 format=3 uid="uid://cxds8kep1nb5a"]
+[gd_scene load_steps=17 format=3 uid="uid://cxds8kep1nb5a"]
 
-[ext_resource type="Script" path="res://scripts/battle/battle_camera_controller.gd" id="1_6ccnm"]
 [ext_resource type="Script" path="res://scripts/battle/battle_manager.gd" id="1_i1myg"]
 [ext_resource type="Script" path="res://scripts/battle/battle_bullet_manager.gd" id="2_5f0pi"]
+[ext_resource type="Script" path="res://scripts/battle/backgrounds/battle_background_autumn_plains.gd" id="2_5jr35"]
+[ext_resource type="PackedScene" uid="uid://wc7wldsqgw22" path="res://prefabs/battle/backgrounds/autumn_plains/battle_background_autumn_plains_cloud.tscn" id="3_6wp5h"]
 [ext_resource type="FontFile" uid="uid://bdek8dxu43hp4" path="res://fonts/font_renogare_regular.otf" id="4_ephc0"]
 [ext_resource type="Script" path="res://scripts/debug/battle_debug_manager.gd" id="4_hke2r"]
 [ext_resource type="PackedScene" uid="uid://bep854jo4peh" path="res://prefabs/prefab_player.tscn" id="5_5bs35"]
-[ext_resource type="PackedScene" uid="uid://wddf8klhn20w" path="res://prefabs/prefab_bullet.tscn" id="5_weer3"]
-[ext_resource type="PackedScene" uid="uid://c4le3e26auqau" path="res://prefabs/prefab_enemy.tscn" id="7_mf3wx"]
+[ext_resource type="Script" path="res://scripts/battle/ui/battle_ui_enemy_remaining.gd" id="5_a22s8"]
+[ext_resource type="FontFile" uid="uid://dxbpm2sd8oeww" path="res://fonts/font_seven_segment.ttf" id="5_nrgkv"]
 [ext_resource type="PackedScene" uid="uid://dxxatojl4t8tc" path="res://prefabs/debug/prefab_debug_cell.tscn" id="7_mj0hw"]
-[ext_resource type="Script" path="res://scripts/battle/enemies/elite_priest/enemy_elite_priest.gd" id="8_dviwi"]
-[ext_resource type="PackedScene" uid="uid://dmmnmh2tccwit" path="res://prefabs/prefab_player_priest_shot.tscn" id="12_3fub8"]
+[ext_resource type="Script" path="res://scripts/battle/ui/battle_ui_shot_damage_manager.gd" id="8_4g74y"]
+[ext_resource type="PackedScene" uid="uid://b7ceonu4ae3dp" path="res://prefabs/battle/ui/prefab_battle_ui_shot_damage_number.tscn" id="9_2in8s"]
+[ext_resource type="Texture2D" uid="uid://boslm2rwisixj" path="res://sprites/debug/spr_debug_clouds.png" id="12_dpixh"]
+[ext_resource type="PackedScene" uid="uid://bb830hf157jij" path="res://prefabs/battle/misc/prefab_battle_misc_ripple.tscn" id="13_0iao5"]
+
+[sub_resource type="Environment" id="Environment_nk3kb"]
+ambient_light_source = 2
+ambient_light_color = Color(1, 1, 1, 1)
+ambient_light_energy = 0.4
 
 [sub_resource type="QuadMesh" id="QuadMesh_dwefp"]
+size = Vector2(5, 5)
 
 [node name="Root" type="Node"]
 
@@ -21,7 +30,7 @@ script = ExtResource("1_i1myg")
 
 [node name="Level" type="Node" parent="."]
 
-[node name="Control" type="Control" parent="Level"]
+[node name="Background" type="Control" parent="Level"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -31,7 +40,7 @@ grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="SubViewportContainer" type="SubViewportContainer" parent="Level/Control"]
+[node name="SubViewportContainer" type="SubViewportContainer" parent="Level/Background"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -42,22 +51,56 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 stretch = true
 
-[node name="SubViewport" type="SubViewport" parent="Level/Control/SubViewportContainer"]
+[node name="SubViewport" type="SubViewport" parent="Level/Background/SubViewportContainer"]
 handle_input_locally = false
 size = Vector2i(1366, 768)
 render_target_update_mode = 4
 
-[node name="Camera3D" type="Camera3D" parent="Level/Control/SubViewportContainer/SubViewport"]
-transform = Transform3D(1, 0, 0, 0, 0.963444, 0.267911, 0, -0.267911, 0.963444, 0, 0.441752, 1.17917)
-script = ExtResource("1_6ccnm")
+[node name="Background" type="Node3D" parent="Level/Background/SubViewportContainer/SubViewport"]
+script = ExtResource("2_5jr35")
 
-[node name="Ground" type="MeshInstance3D" parent="Level/Control/SubViewportContainer/SubViewport"]
+[node name="Camera3D" type="Camera3D" parent="Level/Background/SubViewportContainer/SubViewport/Background"]
+transform = Transform3D(1, 0, 0, 0, 0.997101, 0.0760924, 0, -0.0760924, 0.997101, 0, 1.4567, 4.06592)
+environment = SubResource("Environment_nk3kb")
+
+[node name="Ground" type="MeshInstance3D" parent="Level/Background/SubViewportContainer/SubViewport/Background"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
 mesh = SubResource("QuadMesh_dwefp")
-skeleton = NodePath("../..")
+skeleton = NodePath("../../..")
 
-[node name="OmniLight3D" type="OmniLight3D" parent="Level/Control/SubViewportContainer/SubViewport"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.346087, 0.738017, -0.284633)
+[node name="Cloud" parent="Level/Background/SubViewportContainer/SubViewport/Background" instance=ExtResource("3_6wp5h")]
+transform = Transform3D(0.3, 0, 0, 0, 0.286585, 0.0887074, 0, -0.0887074, 0.286585, -2.51618, 1.68386, -1.60852)
+visible = false
+
+[node name="Node2D" type="Node2D" parent="Level"]
+
+[node name="TopLeft" type="Node2D" parent="Level/Node2D"]
+
+[node name="DebugParent" type="Node2D" parent="Level/Node2D/TopLeft"]
+
+[node name="Cell" parent="Level/Node2D/TopLeft/DebugParent" instance=ExtResource("7_mj0hw")]
+visible = false
+modulate = Color(0, 0, 0, 0.0470588)
+
+[node name="EnemyParent" type="Node2D" parent="Level/Node2D/TopLeft"]
+
+[node name="Player" parent="Level/Node2D/TopLeft" instance=ExtResource("5_5bs35")]
+position = Vector2(289, 583)
+
+[node name="EnemyBulletParent" type="Node2D" parent="Level/Node2D/TopLeft"]
+
+[node name="PlayerShotParent" type="Node2D" parent="Level/Node2D/TopLeft"]
+
+[node name="BulletManager" type="Node2D" parent="Level/Node2D/TopLeft"]
+script = ExtResource("2_5f0pi")
+
+[node name="Control" type="Control" parent="Level"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="DebugParent" type="Control" parent="Level/Control"]
 layout_mode = 1
@@ -88,38 +131,73 @@ theme_override_fonts/font = ExtResource("4_ephc0")
 theme_override_font_sizes/font_size = 24
 text = "FPS: 24"
 
-[node name="Node2D" type="Node2D" parent="Level"]
+[node name="UIParent" type="Control" parent="Level/Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="TopLeft" type="Node2D" parent="Level/Node2D"]
+[node name="UIEnemyRemaining" type="Control" parent="Level/Control/UIParent"]
+anchors_preset = 0
+offset_top = 272.0
+offset_right = 1366.0
+offset_bottom = 401.0
+script = ExtResource("5_a22s8")
+_color_start = Color(0.807843, 0.368627, 0.25098, 1)
+_color_end = Color(0.917647, 0.564706, 0.415686, 1)
 
-[node name="DebugParent" type="Node2D" parent="Level/Node2D/TopLeft"]
+[node name="Label" type="Label" parent="Level/Control/UIParent/UIEnemyRemaining"]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.627451)
+theme_override_constants/outline_size = 8
+theme_override_fonts/font = ExtResource("5_nrgkv")
+theme_override_font_sizes/font_size = 60
+text = "REST 2"
+horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="Cell" parent="Level/Node2D/TopLeft/DebugParent" instance=ExtResource("7_mj0hw")]
+[node name="UIShotDamage" type="Control" parent="Level/Control/UIParent"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("8_4g74y")
+
+[node name="ShotDamage" parent="Level/Control/UIParent/UIShotDamage" instance=ExtResource("9_2in8s")]
 visible = false
-modulate = Color(0, 0, 0, 0.0470588)
+layout_mode = 0
+anchors_preset = 0
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 1.0
+offset_bottom = 23.0
+grow_horizontal = 1
+grow_vertical = 1
 
-[node name="Player" parent="Level/Node2D/TopLeft" instance=ExtResource("5_5bs35")]
-position = Vector2(289, 583)
-
-[node name="Enemy" parent="Level/Node2D/TopLeft" instance=ExtResource("7_mf3wx")]
-
-[node name="Enemy2" parent="Level/Node2D/TopLeft" instance=ExtResource("7_mf3wx")]
-position = Vector2(498, 219)
-
-[node name="Behavior" parent="Level/Node2D/TopLeft/Enemy2" index="0"]
-script = ExtResource("8_dviwi")
-
-[node name="EnemyBulletParent" type="Node2D" parent="Level/Node2D/TopLeft"]
-
-[node name="Bullet" parent="Level/Node2D/TopLeft/EnemyBulletParent" instance=ExtResource("5_weer3")]
+[node name="DebugRippleTest" type="TextureRect" parent="Level"]
 visible = false
+offset_right = 1366.0
+offset_bottom = 768.0
+texture = ExtResource("12_dpixh")
+expand_mode = 1
 
-[node name="PlayerShotParent" type="Node2D" parent="Level/Node2D/TopLeft"]
-
-[node name="PlayerShot" parent="Level/Node2D/TopLeft/PlayerShotParent" instance=ExtResource("12_3fub8")]
-
-[node name="BulletManager" type="Node2D" parent="Level/Node2D/TopLeft"]
-script = ExtResource("2_5f0pi")
-
-[editable path="Level/Node2D/TopLeft/Enemy"]
-[editable path="Level/Node2D/TopLeft/Enemy2"]
+[node name="RippleShader" parent="Level" instance=ExtResource("13_0iao5")]
+visible = false
+offset_left = -309.0
+offset_top = -656.0
+offset_right = 1691.0
+offset_bottom = 1344.0

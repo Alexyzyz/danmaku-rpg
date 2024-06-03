@@ -10,8 +10,11 @@ var speed: float
 var max_speed: float = INF
 var acceleration: float
 
+var is_deadly: bool
+
 # Rendering
 var resource: BulletResource
+var color: Color
 
 # Custom behavior per tick
 var on_tick: Callable
@@ -25,6 +28,7 @@ var sp_cell_next: Bullet
 var sp_cell_prev: Bullet
 var sp_last_cell: Vector2i
 
+var _move_per_tick: bool
 var _graze_modulation_t: float
 
 # Public methods
@@ -39,33 +43,46 @@ func set_up(
 	prev_position = p_position
 	direction = p_direction
 	speed = p_speed
-	resource = p_resource
-	
 	max_speed = INF
 	acceleration = 0
+	
+	resource = p_resource
+	color = Color.WHITE
+	
+	is_deadly = true
+	
+	_move_per_tick = true
 
 func tick(delta: float):
-	_update_graze()
-	_move(delta)
-
-func _move(delta: float):
-	speed = min(speed + delta * acceleration, max_speed)
-	if speed == 0:
+	if !is_active:
 		return
-	
+	_update_graze()
+	if _move_per_tick:
+		_move(delta)
+
+func toggle_move_per_tick(state: bool):
+	_move_per_tick = state
+
+func move_to(p_new_pos: Vector2):
+	if !is_active:
+		return
 	prev_position = position
-	var new_pos: Vector2 = position + speed * direction * delta
-	BattleBulletManager.sp_update_grid(self, new_pos)
-	position = new_pos
-	# TODO: Re-add logic for rotation here.
+	BattleBulletManager.sp_update_grid(self, p_new_pos)
+	position = p_new_pos
 
 func rotate(angle: float):
+	if !is_active:
+		return
 	direction = direction.rotated(angle)
 
 func set_rotation(angle: float):
+	if !is_active:
+		return
 	direction = direction.rotated(angle - direction.angle())
 
 func graze():
+	if !is_active:
+		return
 	_graze_modulation_t = 1.0
 
 func destroy():
@@ -86,10 +103,21 @@ func get_rect_midway_pos():
 		midway_pos.x + HITBOX_RADIUS,
 		midway_pos.y + HITBOX_RADIUS).abs()
 
-func get_graze_modulation() -> Color:
-	return Color(1, 1, 1) - _graze_modulation_t * 0.1 * Color(1, 1, 1)
+func get_color() -> Color:
+	return color - _graze_modulation_t * 0.1 * Color.WHITE
 
 # Private methods
+
+func _move(delta: float):
+	speed = min(speed + delta * acceleration, max_speed)
+	if speed == 0:
+		return
+	
+	prev_position = position
+	var new_pos: Vector2 = position + speed * direction * delta
+	BattleBulletManager.sp_update_grid(self, new_pos)
+	position = new_pos
+	# TODO: Re-add logic for rotation here.
 
 func _update_graze():
 	if _graze_modulation_t > 0.01:

@@ -1,7 +1,7 @@
 class_name BattleBulletManager
 extends Node2D
 
-const BULLET_MAX_COUNT: int = 2000
+const BULLET_MAX_COUNT: int = 1800
 const SP_GRID_SIZE: Vector2i = Vector2i(20, 26)
 const SP_GRID_PADDING: int = 0
 
@@ -18,8 +18,7 @@ static var _debug_active_bullet_count: int = 0
 # Main methods
 
 func _ready():
-	BattleBulletManager._sp_set_up_grid()
-	_op_set_up_pool()
+	pass
 
 func _process(delta: float):
 	_update_bullets(delta)
@@ -36,6 +35,10 @@ func _draw():
 
 # Public methods
 
+static func set_up():
+	_sp_set_up_grid()
+	_op_set_up_pool()
+
 static func shoot_bullet(
 	pos: Vector2,
 	angle: float,
@@ -48,6 +51,8 @@ static func shoot_bullet(
 		return
 	if sp_is_cell_oob(sp_get_cell(pos)):
 		return
+	
+	_debug_active_bullet_count += 1
 	
 	_first_inactive_bullet = bullet.next_inactive
 	bullet.next_inactive = null
@@ -105,6 +110,8 @@ static func sp_update_grid(bullet: Bullet, new_pos: Vector2):
 	_sp_add_to_grid(bullet, new_cell)
 
 static func sp_destroy_bullet(bullet: Bullet):
+	_debug_active_bullet_count -= 1
+	
 	var last_cell: Vector2i = bullet.sp_last_cell
 	if !sp_is_cell_oob(last_cell):
 		_sp_remove_bullet_from_cell(bullet, last_cell)
@@ -156,7 +163,7 @@ static func sp_is_cell_oob(p_cell: Vector2i) -> bool:
 
 # Private methods
 
-func _op_set_up_pool():
+static func _op_set_up_pool():
 	_first_inactive_bullet = Bullet.new()
 	_bullet_list.push_back(_first_inactive_bullet)
 	
@@ -245,7 +252,7 @@ func _draw_bullets():
 		draw_texture(
 			texture,
 			bullet.position - offset,
-			bullet.get_graze_modulation()
+			bullet.get_color()
 		)
 
 # Private methods :: Debugging

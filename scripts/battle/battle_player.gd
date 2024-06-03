@@ -5,8 +5,13 @@ const BASE_SPEED: float = 400
 const BASE_FOCUS_SPEED: float = 150
 
 const INVINCIBLE_TIME: float = 3
-const STOP_SHOOTING_TIME: float = 0.2
+
 const SHOOT_TIME: float = 0.06
+
+const SHOT_DAMAGE: float = 3
+
+const AIM_NOTCHES: int = 40
+const AIM_TICK_TIME: float = 0.05
 
 const GRAZE_RADIUS: float = 50
 const HITBOX_RADIUS: float = 3
@@ -15,8 +20,12 @@ var _invincible_alarm: float
 var _stop_shooting_alarm: float
 var _shoot_alarm: float
 
+var _aim_angle: float = -PI / 2
+var _aim_tick_alarm: float
+
 var _is_shooting: bool
 var _is_focused: bool
+var _is_aiming: bool
 
 var _debug_grazed_count: int
 var _debug_closest_distance: float
@@ -30,13 +39,15 @@ var _debug_closest_distance: float
 # Main methods
 
 func _ready():
-	pass # Replace with function body.
+	pass
+	
 
-func _process(delta):
-	_handle_shoot_input(delta)
-	_handle_move_inputs(delta)
+func _process(p_delta: float):
+	_handle_shoot_input(p_delta)
+	_handle_aim_inputs(p_delta)
+	_handle_move_inputs(p_delta)
 	_handle_focus_input()
-	_handle_invincibility(delta)
+	_handle_invincibility(p_delta)
 	_check_collision()
 
 # Public methods
@@ -50,23 +61,35 @@ func get_rect():
 
 # Private methods
 
-func _handle_shoot_input(delta):
-	if _stop_shooting_alarm > 0:
-		_stop_shooting_alarm -= delta
+func _handle_shoot_input(p_delta: float):	
+	if Input.is_action_just_pressed("game_confirm"):
+		_is_shooting = !_is_shooting
 	
-	if _is_shooting:
-		if _shoot_alarm > 0:
-			_shoot_alarm -= delta
-		else:
-			if _stop_shooting_alarm > 0:
-				_shoot_alarm = SHOOT_TIME
-			else:
-				_is_shooting = false
-			BattleManager.player_shoot_shot()
+	if !_is_shooting:
+		return
 	
-	if Input.is_action_pressed("game_confirm"):
-		_stop_shooting_alarm = STOP_SHOOTING_TIME
-		_is_shooting = true
+	if _shoot_alarm > 0:
+		_shoot_alarm -= p_delta
+		return
+	_shoot_alarm = SHOOT_TIME
+	BattleManager.player_shoot_shot(_aim_angle, SHOT_DAMAGE)
+	
+
+func _handle_aim_inputs(p_delta: float):
+	var aim_left: int = 1 if Input.is_action_pressed("game_aim_left") else 0
+	var aim_right: int = 1 if Input.is_action_pressed("game_aim_right") else 0
+	var aim_axis: int = aim_right - aim_left
+	
+	if aim_axis == 0:
+		_aim_tick_alarm = AIM_TICK_TIME
+		return
+	
+	if _aim_tick_alarm > 0:
+		_aim_tick_alarm -= p_delta
+		return
+	_aim_tick_alarm = AIM_TICK_TIME
+	
+	_aim_angle += aim_axis * TAU / AIM_NOTCHES
 
 func _handle_move_inputs(delta):
 	var direction = UtilMovement.get_direction_vector()
@@ -98,6 +121,9 @@ func _check_collision():
 	for head_bullet in bullet_list:
 		var bullet: Bullet = head_bullet
 		while bullet != null:
+			if !bullet.is_deadly:
+				bullet = bullet.sp_cell_next
+				continue
 			
 			# PHASE 1 ✦ Bounding box check
 			if !get_rect().intersects(bullet.get_rect()) and \
@@ -109,7 +135,6 @@ func _check_collision():
 			var distance: float = (bullet.position - position).length()
 			if distance < GRAZE_RADIUS:
 				bullet.graze()
-				pass
 			
 			if distance < HITBOX_RADIUS + bullet.HITBOX_RADIUS:
 				bullet.destroy()
@@ -127,7 +152,6 @@ func _check_collision():
 func _handle_on_hit():
 	if _invincible_alarm > 0:
 		return
-	
 	# position = Vector2(BattleManager.battle_area_size.x / 2, BattleManager.battle_area_south_y - 100)
 	_invincible_alarm = INVINCIBLE_TIME
 
@@ -136,7 +160,6 @@ func _handle_invincibility(delta: float):
 		_invincible_alarm -= delta
 		
 		var do_flicker: bool = int(10 * _invincible_alarm) % 2 == 0
-		child_sprite.self_modulate.a = 0.75 if do_flicker else 1.0
+		child_sprite.self_modulate.a = 0.6 if do_flicker else 1.0
 		return
 	child_sprite.self_modulate.a = 1
-	

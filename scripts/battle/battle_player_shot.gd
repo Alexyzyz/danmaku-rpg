@@ -8,31 +8,33 @@ var sp_cell_prev: BattlePlayerShot
 var sp_cell_next: BattlePlayerShot
 var sp_last_cell: Vector2i
 
-var damage: float = 0.5
+var damage: float
 
-@onready var child_sprite: Sprite2D = $Sprite
+@onready var _child_sprite: Sprite2D = $Sprite
+@onready var _child_sprite_dropshadow: Sprite2D = $DropShadow
 
 # Main methods
 
-func _process(delta):
-	_move(delta)
+func _process(p_delta: float):
+	_move(p_delta)
 
 # Public methods
 
-func set_up(p_position: Vector2):
+func set_up(p_position: Vector2, p_angle: float, p_shot_damage):
 	movement.position = p_position
-	movement.direction_angle = -PI / 2
+	movement.direction_angle = p_angle
 	movement.speed = 700
 	position = p_position
+	damage = p_shot_damage
 
 func disable():
 	set_process(false)
-	child_sprite.visible = false
+	visible = false
 	movement.reset()
 
 func enable():
 	set_process(true)
-	child_sprite.visible = true
+	visible = true
 
 func destroy():
 	sp_manager.handle_destroyed_obj(self)

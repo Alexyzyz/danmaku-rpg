@@ -1,4 +1,4 @@
-class_name EnemyElitePriest
+class_name BattleEnemyElitePriest
 extends Node2D
 
 var _attack_main: AttackMain = AttackMain.new()

@@ -1,4 +1,4 @@
-class_name EnemyNatureTriangleAimer
+class_name BattleEnemyNatureTriangleAimer
 extends Node2D
 
 var shooter: Node2D

@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://wc7wldsqgw22"]
+
+[ext_resource type="Texture2D" uid="uid://l6ffbpjyiuas" path="res://sprites/battle/backgrounds/autumn_plains/spr_battle_background_autumn_plains_cloud.png" id="1_ts3o3"]
+
+[node name="Cloud" type="Sprite3D"]
+transform = Transform3D(0.3, 0, 0, 0, 0.286585, 0.0887074, 0, -0.0887074, 0.286585, -1.25292, 1.68386, -1.60852)
+modulate = Color(0.8, 0.752, 0.72, 0.705882)
+texture = ExtResource("1_ts3o3")

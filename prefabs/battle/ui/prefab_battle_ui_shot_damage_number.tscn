@@ -1,0 +1,25 @@
+[gd_scene load_steps=2 format=3 uid="uid://b7ceonu4ae3dp"]
+
+[ext_resource type="FontFile" uid="uid://bdek8dxu43hp4" path="res://fonts/font_renogare_regular.otf" id="1_ktgat"]
+
+[node name="ShotDamage" type="Label"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -683.0
+offset_top = -384.0
+offset_right = -483.0
+offset_bottom = -284.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(100, 50)
+theme_override_colors/font_color = Color(1, 0.85, 0.4, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 8
+theme_override_fonts/font = ExtResource("1_ktgat")
+theme_override_font_sizes/font_size = 20
+text = "20"
+horizontal_alignment = 1
+vertical_alignment = 1
