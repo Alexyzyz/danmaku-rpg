@@ -20,7 +20,7 @@ func _process(p_delta: float):
 static func spawn_damage_number(
 	p_damage: int,
 	p_position: Vector2,
-	p_offset: float = 50):
+	p_offset: float = 30):
 	
 	if _first_inactive_number == null:
 		return

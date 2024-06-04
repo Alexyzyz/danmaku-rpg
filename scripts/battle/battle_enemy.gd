@@ -49,7 +49,7 @@ func _check_if_hit():
 			if distance < BB_SIDE_LENGTH:
 				shot.destroy()
 				
-				BattleUIShotDamageManager.spawn_damage_number(shot.damage, global_position)
+				BattleUIShotDamageManager.spawn_damage_number(shot.damage, shot.global_position)
 				health -= shot.damage
 				
 				if health <= 0:

@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://cxds8kep1nb5a"]
+[gd_scene load_steps=19 format=3 uid="uid://cxds8kep1nb5a"]
 
 [ext_resource type="Script" path="res://scripts/battle/battle_manager.gd" id="1_i1myg"]
 [ext_resource type="Script" path="res://scripts/battle/battle_bullet_manager.gd" id="2_5f0pi"]
@@ -14,6 +14,7 @@
 [ext_resource type="PackedScene" uid="uid://b7ceonu4ae3dp" path="res://prefabs/battle/ui/prefab_battle_ui_shot_damage_number.tscn" id="9_2in8s"]
 [ext_resource type="Texture2D" uid="uid://boslm2rwisixj" path="res://sprites/debug/spr_debug_clouds.png" id="12_dpixh"]
 [ext_resource type="PackedScene" uid="uid://bb830hf157jij" path="res://prefabs/battle/misc/prefab_battle_misc_ripple.tscn" id="13_0iao5"]
+[ext_resource type="Shader" path="res://shaders/shader_enemy_ripple.gdshader" id="15_jht4d"]
 
 [sub_resource type="Environment" id="Environment_nk3kb"]
 ambient_light_source = 2
@@ -22,6 +23,10 @@ ambient_light_energy = 0.4
 
 [sub_resource type="QuadMesh" id="QuadMesh_dwefp"]
 size = Vector2(5, 5)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_doykg"]
+shader = ExtResource("15_jht4d")
+shader_parameter/wave_radius = 1.0
 
 [node name="Root" type="Node"]
 
@@ -71,6 +76,28 @@ skeleton = NodePath("../../..")
 [node name="Cloud" parent="Level/Background/SubViewportContainer/SubViewport/Background" instance=ExtResource("3_6wp5h")]
 transform = Transform3D(0.3, 0, 0, 0, 0.286585, 0.0887074, 0, -0.0887074, 0.286585, -2.51618, 1.68386, -1.60852)
 visible = false
+
+[node name="BackgroundShader" type="Control" parent="Level"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="EnemyRippleShader" type="ColorRect" parent="Level/BackgroundShader"]
+material = SubResource("ShaderMaterial_doykg")
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 444.0
+offset_top = 231.0
+offset_right = 844.0
+offset_bottom = 631.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(200, 200)
 
 [node name="Node2D" type="Node2D" parent="Level"]
 
