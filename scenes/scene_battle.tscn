@@ -61,19 +61,19 @@ handle_input_locally = false
 size = Vector2i(1366, 768)
 render_target_update_mode = 4
 
-[node name="Background" type="Node3D" parent="Level/Background/SubViewportContainer/SubViewport"]
+[node name="BackgroundScene" type="Node3D" parent="Level/Background/SubViewportContainer/SubViewport"]
 script = ExtResource("2_5jr35")
 
-[node name="Camera3D" type="Camera3D" parent="Level/Background/SubViewportContainer/SubViewport/Background"]
+[node name="Camera3D" type="Camera3D" parent="Level/Background/SubViewportContainer/SubViewport/BackgroundScene"]
 transform = Transform3D(1, 0, 0, 0, 0.997101, 0.0760924, 0, -0.0760924, 0.997101, 0, 1.4567, 4.06592)
 environment = SubResource("Environment_nk3kb")
 
-[node name="Ground" type="MeshInstance3D" parent="Level/Background/SubViewportContainer/SubViewport/Background"]
+[node name="Ground" type="MeshInstance3D" parent="Level/Background/SubViewportContainer/SubViewport/BackgroundScene"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
 mesh = SubResource("QuadMesh_dwefp")
 skeleton = NodePath("../../..")
 
-[node name="Cloud" parent="Level/Background/SubViewportContainer/SubViewport/Background" instance=ExtResource("3_6wp5h")]
+[node name="Cloud" parent="Level/Background/SubViewportContainer/SubViewport/BackgroundScene" instance=ExtResource("3_6wp5h")]
 transform = Transform3D(0.3, 0, 0, 0, 0.286585, 0.0887074, 0, -0.0887074, 0.286585, -2.51618, 1.68386, -1.60852)
 visible = false
 
@@ -84,6 +84,7 @@ offset_right = 40.0
 offset_bottom = 40.0
 
 [node name="EnemyRippleShader" type="ColorRect" parent="Level/BackgroundShader"]
+visible = false
 material = SubResource("ShaderMaterial_doykg")
 layout_mode = 1
 anchors_preset = 8

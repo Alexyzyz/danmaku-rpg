@@ -1,14 +1,16 @@
 class_name BattleEnemyNatureTriangleAimer
 extends Node2D
 
-var shooter: Node2D
+const MAX_HEALTH: float = 100
+
+var _parent: Node2D
 var attack_main: AttackMain
 
 # Public methods
 
-func set_up(p_shooter: Node2D):
-	shooter = p_shooter
-	attack_main = AttackMain.new(shooter)
+func set_up():
+	_parent = get_parent()
+	attack_main = AttackMain.new(_parent)
 
 func tick(delta: float):
 	attack_main.tick(delta)
@@ -33,7 +35,8 @@ class AttackMain:
 			x.tick(delta)
 	
 	func _shoot_triangle_slow():
-		var direction = UtilMath.get_angle_from_vector(BattleManager.obj_player.position - shooter.position)
+		var player: BattlePlayer = BattleManager.get_player()
+		var direction = UtilMath.get_angle_from_vector(player.position - shooter.position)
 		var new_tickable = AttackTriangle.new(
 				shooter,
 				direction,
@@ -45,7 +48,8 @@ class AttackMain:
 		tick_list.push_back(new_tickable)
 	
 	func _shoot_triangle_fast():
-		var direction = UtilMath.get_angle_from_vector(BattleManager.obj_player.position - shooter.position)
+		var player: BattlePlayer = BattleManager.get_player()
+		var direction = UtilMath.get_angle_from_vector(player.position - shooter.position)
 		var new_tickable = AttackTriangle.new(
 				shooter,
 				direction,

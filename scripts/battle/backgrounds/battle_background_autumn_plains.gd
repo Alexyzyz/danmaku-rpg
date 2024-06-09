@@ -2,19 +2,25 @@ class_name BattleBackgroundAutumnPlains
 extends Node3D
 
 var _cloud_list: Array[Cloud]
-var _prefab_cloud: PackedScene = preload("res://prefabs/battle/backgrounds/autumn_plains/battle_background_autumn_plains_cloud.tscn")
+var _prefab_cloud: PackedScene
 
 # Main methods
 
 func _ready():
 	_set_up()
 
-func _process(p_delta: float):
+
+# Public methods
+
+func update(p_delta: float):
 	_update_clouds(p_delta)
+
 
 # Private methods
 
 func _set_up():
+	_prefab_cloud = preload("res://prefabs/battle/backgrounds/autumn_plains/battle_background_autumn_plains_cloud.tscn")
+	
 	var spawn_z: float = 0
 	for i in 10:
 		var new_cloud_instance: Sprite3D = _prefab_cloud.instantiate()
@@ -28,9 +34,11 @@ func _set_up():
 	for cloud in _cloud_list:
 		cloud.set_spawn_z(spawn_z)
 
+
 func _update_clouds(p_delta: float):
 	for cloud in _cloud_list:
 		cloud.update(p_delta)
+
 
 # Subclasses
 
@@ -54,6 +62,7 @@ class Cloud:
 		obj.position.y += y_offset
 		obj.position.z = p_spawn_z
 	
+	
 	# Public methods
 	
 	func update(p_delta: float):
@@ -69,6 +78,9 @@ class Cloud:
 		
 		obj.modulate.a = lerp(0, 1, min(1, 0.5 * respawn_tick))
 	
+	
 	func set_spawn_z(p_z: float):
 		respawn_z = p_z
+	
+	
 

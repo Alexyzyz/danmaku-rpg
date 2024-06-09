@@ -53,7 +53,6 @@ class SphereAttack:
 				spawn_pos, 0, 0, UtilBulletResource.default
 			)
 			if new_bullet == null:
-				print(spawn_pos)
 				continue
 			new_bullet.toggle_move_per_tick(false)
 			

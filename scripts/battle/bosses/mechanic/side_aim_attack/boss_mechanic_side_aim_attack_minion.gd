@@ -4,6 +4,7 @@ extends Node2D
 var movement: MovementData = MovementData.new()
 var is_broken: bool = false
 
+@warning_ignore("unused_private_class_variable")
 @onready var _bullet_texture = preload("res://sprites/bullets/spr_bullet_0.png")
 
 func _ready():
@@ -23,7 +24,7 @@ func set_up(pos: Vector2, dir: float, spd: float):
 
 func shoot_at_player():
 	var angle: float = UtilMath.get_angle_from_vector(BattleManager.obj_player.position - position)
-	BattleBulletManager.shoot_bullet(position, angle, 160, _bullet_texture)
+	BattleBulletManager.shoot_bullet(position, angle, 160, UtilBulletResource.default)
 
 # Private methods
 

@@ -1,16 +1,19 @@
 class_name BattleBossMiscMajorSwarms
 extends Node2D
 
+const MAX_HEALTH: float = 200
+const FOLLOW_SPEED: float = 10
+
 var _owner: Node2D
 var _main_attack: MainAttack
 var _main_movement: MainMovement
 
 # Main methods
 
-func set_up(p_owner: Node2D):
-	_owner = p_owner
-	_main_attack = MainAttack.new(p_owner)
-	_main_movement = MainMovement.new(p_owner)
+func set_up():
+	_owner = get_parent()
+	_main_attack = MainAttack.new(_owner)
+	_main_movement = MainMovement.new(_owner)
 
 func tick(p_delta: float):
 	_main_attack.tick(p_delta)
@@ -26,7 +29,7 @@ class MainMovement:
 	
 	func tick(p_delta: float):
 		var direction: Vector2 = (BattleManager.get_player().position - _owner.position).normalized()
-		direction = p_delta * 10 * direction
+		direction = p_delta * FOLLOW_SPEED * direction
 		_owner.move_to(direction)
 		
 
@@ -68,7 +71,7 @@ class SwarmAttack:
 	const BULLET_SPREAD: float = 16
 	const BULLET_SPEED: float = 0
 	const BULLET_ACCELERATION: float = 100
-	const BULLET_MAX_SPEED: float = 100
+	const BULLET_MAX_SPEED: float = 50 # 100
 	const TIMER: float = 0.001
 	
 	var _owner: Node2D

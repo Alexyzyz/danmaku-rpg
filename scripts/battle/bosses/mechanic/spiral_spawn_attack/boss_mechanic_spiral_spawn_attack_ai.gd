@@ -70,7 +70,7 @@ func _handle_spiral_attack(spiral_attack: SpiralAttack, delta):
 			spawn_pos,
 			ring_dir,
 			5,
-			_bullet_texture)
+			UtilBulletResource.default)
 		if new_bullet == null:
 			continue
 		new_bullet.max_speed = 1000

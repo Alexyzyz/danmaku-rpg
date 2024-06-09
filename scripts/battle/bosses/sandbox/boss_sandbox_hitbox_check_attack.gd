@@ -33,8 +33,8 @@ func _handle_lane_attack(delta: float):
 		position,
 		aim_direction,
 		120,
-		_bullet_texture,
 		_lane_attack_a.bullet_count,
+		UtilBulletResource.default,
 		PI / 4,
 		modify_bullet)
 

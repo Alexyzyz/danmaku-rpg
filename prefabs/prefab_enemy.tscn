@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://c4le3e26auqau"]
+[gd_scene load_steps=6 format=3 uid="uid://c4le3e26auqau"]
 
 [ext_resource type="Script" path="res://scripts/battle/battle_enemy.gd" id="1_iet5a"]
 [ext_resource type="Texture2D" uid="uid://dkfvfmk8mtabn" path="res://sprites/bullets/spr_bullet_0_dropshadow.png" id="3_swct0"]
-[ext_resource type="Texture2D" uid="uid://ss04wv2uapdv" path="res://sprites/battle/enemies/spr_battle_enemy_priest.png" id="4_rkg8s"]
+[ext_resource type="Texture2D" uid="uid://dotoaek5bueug" path="res://sprites/battle/enemies/spr_battle_enemy_radish_dog.png" id="3_wmsen"]
+[ext_resource type="Texture2D" uid="uid://bbxcvh0rto3lb" path="res://sprites/basic/spr_rect.png" id="5_15dqh"]
 [ext_resource type="Texture2D" uid="uid://w5xyi1f2rh4l" path="res://sprites/battle/ui/spr_ui_battle_enemy_health_bar.png" id="5_gjrny"]
 
 [node name="Enemy" type="Node2D"]
@@ -11,13 +12,13 @@ script = ExtResource("1_iet5a")
 [node name="Behavior" type="Node2D" parent="."]
 
 [node name="DropShadow" type="Sprite2D" parent="."]
-self_modulate = Color(1, 1, 1, 0.25098)
-scale = Vector2(24, 24)
+self_modulate = Color(0, 0, 0, 0.27451)
+scale = Vector2(15, 15)
 texture = ExtResource("3_swct0")
 
 [node name="Sprite" type="Sprite2D" parent="."]
 scale = Vector2(0.16, 0.16)
-texture = ExtResource("4_rkg8s")
+texture = ExtResource("3_wmsen")
 
 [node name="Control" type="Control" parent="."]
 layout_mode = 3
@@ -25,7 +26,7 @@ anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="HealthBar" type="TextureProgressBar" parent="Control"]
+[node name="HealthCircle" type="TextureProgressBar" parent="Control"]
 layout_mode = 0
 offset_left = -100.0
 offset_top = -100.0
@@ -37,5 +38,19 @@ fill_mode = 5
 nine_patch_stretch = true
 texture_under = ExtResource("5_gjrny")
 texture_progress = ExtResource("5_gjrny")
+tint_under = Color(1, 1, 1, 0.27451)
+tint_progress = Color(0.405333, 0.8, 0.16, 1)
+
+[node name="HealthBar" type="TextureProgressBar" parent="Control"]
+layout_mode = 0
+offset_left = -40.0
+offset_top = -40.0
+offset_right = 40.0
+offset_bottom = -37.0
+step = 0.1
+value = 100.0
+nine_patch_stretch = true
+texture_under = ExtResource("5_15dqh")
+texture_progress = ExtResource("5_15dqh")
 tint_under = Color(1, 1, 1, 0.27451)
 tint_progress = Color(0.405333, 0.8, 0.16, 1)

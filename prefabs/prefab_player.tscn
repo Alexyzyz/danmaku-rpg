@@ -1,9 +1,11 @@
-[gd_scene load_steps=5 format=3 uid="uid://bep854jo4peh"]
+[gd_scene load_steps=7 format=3 uid="uid://bep854jo4peh"]
 
 [ext_resource type="Script" path="res://scripts/battle/battle_player.gd" id="1_e2tny"]
 [ext_resource type="Texture2D" uid="uid://dkfvfmk8mtabn" path="res://sprites/bullets/spr_bullet_0_dropshadow.png" id="2_2b7nw"]
 [ext_resource type="Texture2D" uid="uid://dx6vyfrcmvdkt" path="res://sprites/battle/players/priest/spr_battle_player_priest.png" id="3_1u1b1"]
 [ext_resource type="Texture2D" uid="uid://csu5yk74v7my6" path="res://sprites/battle/players/spr_battle_hitbox.png" id="4_eq2r7"]
+[ext_resource type="Texture2D" uid="uid://bbxcvh0rto3lb" path="res://sprites/basic/spr_rect.png" id="5_15tmq"]
+[ext_resource type="FontFile" uid="uid://bdek8dxu43hp4" path="res://fonts/font_renogare_regular.otf" id="5_wy0xu"]
 
 [node name="Player" type="Node2D"]
 script = ExtResource("1_e2tny")
@@ -26,3 +28,39 @@ z_index = 2
 texture_filter = 1
 scale = Vector2(2, 2)
 texture = ExtResource("4_eq2r7")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 76.0
+offset_top = -46.0
+offset_right = 276.0
+offset_bottom = 54.0
+rotation = -0.163025
+
+[node name="Hit" type="Control" parent="Control"]
+visible = false
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Background" type="TextureRect" parent="Control/Hit"]
+self_modulate = Color(0, 0, 0, 0.54902)
+layout_mode = 0
+offset_left = -16.0
+offset_top = 6.0
+offset_right = 140.0
+offset_bottom = 61.0
+texture = ExtResource("5_15tmq")
+expand_mode = 1
+
+[node name="HitLetter" type="Label" parent="Control/Hit"]
+layout_mode = 0
+offset_left = -0.486908
+offset_top = 2.96022
+offset_right = 108.513
+offset_bottom = 68.9602
+theme_override_fonts/font = ExtResource("5_wy0xu")
+theme_override_font_sizes/font_size = 48
+text = "Hit"
+vertical_alignment = 1
