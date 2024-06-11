@@ -10,8 +10,10 @@ var _attack_main: AttackMain = AttackMain.new()
 func set_up(p_shooter: Node2D):
 	pass
 
+
 func tick(delta):
 	_attack_main.tick(delta)
+
 
 # Subclasses
 
@@ -44,7 +46,7 @@ class AttackSummonMinion:
 	func _init():
 		alarm = AlarmData.new(0.01, 0, _summon)
 		_set_up_positions()
-		player_pos = BattleManager.obj_player.position
+		player_pos = BattleManager.get_player().position
 	
 	func tick(delta: float):
 		alarm.tick(delta)

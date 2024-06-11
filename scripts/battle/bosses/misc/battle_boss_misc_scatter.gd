@@ -2,7 +2,7 @@ class_name BattleBossMiscScatter
 extends Node2D
 
 const MAX_HEALTH: float = 200
-const SCATTER_WAVE_TIME: float = 4
+const SCATTER_WAVE_TIME: float = 8
 
 var _parent: Node2D
 var _scatter_wave_alarm: float
@@ -35,8 +35,8 @@ func _handle_attack_scatter(p_delta: float):
 # Subclasses
 
 class AttackScatter:
-	const SCATTER_STRIP_COUNT: int = 20
-	const SCATTER_STRIP_BULLET_COUNT: int = 10
+	const SCATTER_STRIP_COUNT: int = 18
+	const SCATTER_STRIP_BULLET_COUNT: int = 18
 	const SCATTER_TIME: float = 0
 	const DISPERSE_TIME: float = 0.2
 	
@@ -78,7 +78,7 @@ class AttackScatter:
 		for bullet in _bullet_list:
 			bullet.speed = 0
 			bullet.acceleration = 100
-			bullet.max_speed = 10
+			bullet.max_speed = 100
 		_bullet_list.clear()
 	
 	

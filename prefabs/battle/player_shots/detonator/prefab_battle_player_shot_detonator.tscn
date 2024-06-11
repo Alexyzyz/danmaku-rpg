@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=3 uid="uid://xy02dr5hbqo4"]
+
+[ext_resource type="Script" path="res://scripts/battle/player_shot/detonator/battle_player_shot_detonator.gd" id="1_slq3f"]
+[ext_resource type="Curve" uid="uid://4n5l8o4g4bvj" path="res://prefabs/battle/player_shots/detonator/curve_battle_player_shot_detonator_damage.tres" id="2_ustuj"]
+
+[node name="ShotDetonator" type="Node2D"]
+script = ExtResource("1_slq3f")
+_curve_damage = ExtResource("2_ustuj")

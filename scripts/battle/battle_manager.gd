@@ -6,11 +6,6 @@ const BATTLE_AREA_ASPECT_RATIO: float = 0.75
 const HIT_FREEZE_TIME: float = 1
 const HIT_FREEZE_REBOUND_T: float = 0.5
 
-# Spatial partitioning
-# NOTE: We may eventually do away with the spatial partitioning class
-# or at least refactor it to be more general and work with non-node objects
-static var sp_player_shots: SpatialPartitioningManager
-
 # Important positions
 static var origin_from_center: Vector2
 static var origin_from_top_left: Vector2
@@ -29,7 +24,6 @@ static var _hit_freeze_alarm: float
 # Prefabs
 static var _prefab_enemy: PackedScene
 static var _prefab_enemy_bullet: PackedScene
-static var _prefab_player_shot: PackedScene
 static var _prefab_ripple: PackedScene
 static var _prefab_enemy_ripple: PackedScene
 # Parents
@@ -56,8 +50,9 @@ func _ready():
 	_set_up_objects()
 	_set_up_battle_area()
 	BattleBulletManager.set_up()
-	_set_up_spatial_partitions()
 	_set_up_battle()
+	
+	_obj_player.set_up(UtilShotType.DETONATOR)
 
 
 func _process(p_delta: float):
@@ -78,16 +73,20 @@ static func get_player() -> BattlePlayer:
 	return _obj_player
 
 
+static func get_enemies() -> Array[BattleEnemy]:
+	var list: Array[BattleEnemy] = []
+	list.append_array(_enemy_list)
+	list.append_array(_minor_enemy_list)
+	return list
+
+
+static func is_oob(p_position: Vector2) -> bool:
+	return UtilMath.vec2_is_inside(p_position, Vector2.ZERO, battle_area_size)
+
+
 static func add_minor_enemy(p_minor_enemy: Node2D):
 	_parent_enemy.add_child(p_minor_enemy)
 	_minor_enemy_list.push_back(p_minor_enemy)
-
-
-static func player_shoot_shot(p_aim_angle: float, p_shot_damage: float):
-	var new_shot: BattlePlayerShot = sp_player_shots.spawn_obj(_obj_player.position)
-	if new_shot == null:
-		return
-	new_shot.set_up(_obj_player.position, p_aim_angle, p_shot_damage)
 
 
 static func handle_player_hit():
@@ -120,7 +119,6 @@ static func handle_minor_enemy_defeat(p_minor_enemy: Node2D):
 func _set_up_prefabs():
 	_prefab_enemy = preload("res://prefabs/prefab_enemy.tscn")
 	_prefab_enemy_bullet = preload("res://prefabs/prefab_bullet.tscn")
-	_prefab_player_shot = preload("res://prefabs/prefab_player_priest_shot.tscn")
 	_prefab_ripple = preload("res://prefabs/battle/misc/prefab_battle_misc_ripple.tscn")
 	_prefab_enemy_ripple = preload("res://prefabs/battle/misc/prefab_battle_misc_enemy_ripple.tscn")
 
@@ -136,14 +134,6 @@ func _set_up_objects():
 	_parent_player_shots = $"../Level/Node2D/TopLeft/PlayerShotParent"
 	_parent_background_shader = $"../Level/BackgroundShader"
 	_parent_debug = $"../Level/Node2D/TopLeft/DebugParent"
-
-
-func _set_up_spatial_partitions():
-	sp_player_shots = SpatialPartitioningManager.new(
-		_prefab_player_shot,
-		_parent_player_shots,
-		100
-	)
 
 
 func _set_up_battle():
@@ -163,7 +153,8 @@ func _set_up_battle():
 		# BattleBossMiscScatter,
 		# BattleEnemyNatureTriangleAimer,
 		# BattleEnemyDandelion,
-		BattleEnemyDenseRing,
+		# BattleEnemyDenseRing,
+		BattleEnemyWindSuck,
 	]
 	var spawn_region_start: Vector2 = Vector2(0, 0)
 	var spawn_region_end: Vector2 = Vector2(battle_area_size.x, battle_area_size.y)

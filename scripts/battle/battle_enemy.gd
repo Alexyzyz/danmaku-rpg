@@ -70,6 +70,23 @@ func update(p_delta: float):
 		_child_behavior.update(p_delta)
 
 
+func damage(p_damage: float, p_position: Vector2):
+	BattleUIShotDamageManager.spawn_damage_number(
+		p_damage, p_position)
+	health -= p_damage
+	
+	if health <= 0:
+		if _is_major:
+			BattleManager.handle_enemy_defeat(self)
+		else:
+			BattleManager.handle_minor_enemy_defeat(self)
+		# _obj_ripple_shader.queue_free()
+		return
+	
+	_child_health_bar.value = health
+	_child_health_circle.value = health
+
+
 func get_behavior() -> Node2D:
 	return _child_behavior
 
@@ -84,10 +101,6 @@ func move_to(p_direction: Vector2):
 	position += p_direction
 
 
-func move_along_curve(p_curve: CubicBezier, p_time: float):
-	pass
-
-
 func set_health_display_alpha(p_alpha: float):
 	_child_health_bar.modulate.a = p_alpha
 	_child_health_circle.modulate.a = p_alpha
@@ -99,36 +112,18 @@ func _check_if_hit():
 	if not blocks_shots:
 		return
 	
-	var player_shots: Array[Node2D] = \
-		BattleManager.sp_player_shots \
-		.get_obj_in_cells_surrounding(position)
-	
+	var player_shots: Array[Node2D] = BattleManager.get_player().get_projectiles()
 	for shot in player_shots:
-		while shot != null:
-			var next_shot = shot.sp_cell_next
-			_check_if_shot_hit(shot)
-			shot = next_shot
+		_check_if_shot_hit(shot)
 
 
-func _check_if_shot_hit(p_shot: BattlePlayerShot):
+func _check_if_shot_hit(p_shot: Node2D):
+	if p_shot == null:
+		print(p_shot)
+		return
 	var distance = (p_shot.position - position).length()
 	if distance > BB_SIDE_LENGTH:
 		return
-	
+	damage(p_shot.damage, p_shot.global_position)
 	p_shot.destroy()
-	
-	BattleUIShotDamageManager.spawn_damage_number(
-		p_shot.damage, p_shot.global_position)
-	health -= p_shot.damage
-	
-	if health <= 0:
-		if _is_major:
-			BattleManager.handle_enemy_defeat(self)
-		else:
-			BattleManager.handle_minor_enemy_defeat(self)
-		# _obj_ripple_shader.queue_free()
-		return
-	
-	_child_health_bar.value = health
-	_child_health_circle.value = health
 

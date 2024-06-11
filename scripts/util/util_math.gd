@@ -12,6 +12,11 @@ static func is_between(p_value: float, p_a: float, p_b: float) -> bool:
 	return p_a < p_value and p_value < p_b
 
 
+static func vec2_is_inside(p_vec2: Vector2, p_min: Vector2, p_max: Vector2) -> bool:
+	return p_vec2.x < p_min.x or p_vec2.x > p_max.x \
+		or p_vec2.y < p_min.y or p_vec2.y > p_max.y
+
+
 static func exp_decay(
 	p_a: float,
 	p_b: float,
