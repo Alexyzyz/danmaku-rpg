@@ -90,7 +90,6 @@ class MovementHandler:
 	func update(p_delta: float):
 		_t = UtilMath.exp_decay(_t, 1, 4, p_delta)
 		var new_pos: Vector2 = lerp(_last_pos, _target_pos, _t)
-		print(_last_pos)
 		
 		_parent.position = new_pos.clamp(Vector2.ZERO, BattleManager.battle_area_size)
 	

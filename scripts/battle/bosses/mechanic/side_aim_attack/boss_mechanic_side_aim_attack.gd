@@ -12,11 +12,12 @@ class MinionsShootAttack:
 	var timer: float = 1
 var minions_shoot_attack: MinionsShootAttack
 
-var prefab_minion = preload("res://scripts/battle/bosses/mechanic/side_aim_attack/boss_mechanic_side_aim_attack_minion.tscn")
+var prefab_minion: PackedScene
 
 static var minion_list: Array[BossMechanicSideAimAttackMinion]
 
 func _ready():
+	prefab_minion = preload("res://scripts/battle/bosses/mechanic/side_aim_attack/boss_mechanic_side_aim_attack_minion.tscn")
 	spawn_minion_attack = SpawnMinionAttack.new()
 	minions_shoot_attack = MinionsShootAttack.new()
 
@@ -45,7 +46,7 @@ func _handle_spawn_minion_attack(delta):
 		spawn_pos.y = 0
 	
 	var new_minion: BossMechanicSideAimAttackMinion = prefab_minion.instantiate()	
-	BattleManager.parent.add_child(new_minion)
+	BattleManager._parent_top_left.add_child(new_minion)
 	minion_list.append(new_minion)
 	
 	new_minion.set_up(spawn_pos, PI / 2, 120)

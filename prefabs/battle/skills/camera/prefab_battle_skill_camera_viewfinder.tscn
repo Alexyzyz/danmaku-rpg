@@ -1,0 +1,16 @@
+[gd_scene load_steps=4 format=3 uid="uid://ddq7hg28tp7w2"]
+
+[ext_resource type="Texture2D" uid="uid://c0qjfvdbd5kc4" path="res://sprites/battle/skills/filly_camera/spr_battle_skill_camera_viewfinder.png" id="1_au7f2"]
+[ext_resource type="Script" path="res://scripts/battle/skills/camera/battle_skill_camera_viewfinder.gd" id="1_dfylq"]
+[ext_resource type="Texture2D" uid="uid://br0s0nui0cy8u" path="res://sprites/battle/skills/filly_camera/spr_battle_skill_camera_crosshair.png" id="2_6nfmf"]
+
+[node name="SkillCameraViewfinder" type="Node2D"]
+script = ExtResource("1_dfylq")
+
+[node name="Viewfinder" type="Sprite2D" parent="."]
+texture_filter = 1
+texture = ExtResource("1_au7f2")
+
+[node name="Crosshair" type="Sprite2D" parent="."]
+texture_filter = 1
+texture = ExtResource("2_6nfmf")

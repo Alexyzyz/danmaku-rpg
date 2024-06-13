@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://2w1gctg8ir1h"]
 
-[ext_resource type="Script" path="res://scripts/battle/player_shot/detonator/battle_player_shot_detonator_projectile.gd" id="1_5upt2"]
+[ext_resource type="Script" path="res://scripts/battle/shots/detonator/battle_shot_detonator_projectile.gd" id="1_5upt2"]
 [ext_resource type="Texture2D" uid="uid://dkfvfmk8mtabn" path="res://sprites/bullets/spr_bullet_0_dropshadow.png" id="2_k0jc3"]
 [ext_resource type="Texture2D" uid="uid://csfdruxoxpex7" path="res://sprites/battle/players/priest/spr_battle_player_priest_shots.png" id="3_a3w7s"]
 

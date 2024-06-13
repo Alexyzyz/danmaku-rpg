@@ -119,7 +119,6 @@ func _check_if_hit():
 
 func _check_if_shot_hit(p_shot: Node2D):
 	if p_shot == null:
-		print(p_shot)
 		return
 	var distance = (p_shot.position - position).length()
 	if distance > BB_SIDE_LENGTH:

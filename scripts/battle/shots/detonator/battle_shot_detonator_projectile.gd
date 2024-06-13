@@ -1,4 +1,4 @@
-class_name BattlePlayerShotDetonatorProjectile
+class_name BattleShotDetonatorProjectile
 extends Node2D
 
 const EFFECTIVE_DISTANCE: float = 100
@@ -7,14 +7,14 @@ var _damage_min: float
 var _damage_max: float
 var _damage_curve: Curve
 
-var _manager: BattlePlayerShotDetonator
+var _manager: BattleShotDetonator
 var _direction: Vector2
 var _speed: float
 
 # Main methods
 
 func set_up(
-		p_manager: BattlePlayerShotDetonator,
+		p_manager: BattleShotDetonator,
 		p_position: Vector2,
 		p_angle: float,
 		p_damage_min: float,
@@ -47,6 +47,7 @@ func detonate():
 			continue
 		damage_enemy(enemy, distance)
 		pass
+	BattleManager.spawn_ripple(position)
 	destroy()
 	pass
 
@@ -67,7 +68,6 @@ func destroy():
 
 func _move(p_delta: float):
 	var new_pos: Vector2 = position + p_delta * _speed * _direction
-	print(new_pos)
 	if BattleManager.is_oob(new_pos):
 		destroy()
 		return

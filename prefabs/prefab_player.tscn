@@ -1,13 +1,11 @@
-[gd_scene load_steps=9 format=3 uid="uid://bep854jo4peh"]
+[gd_scene load_steps=7 format=3 uid="uid://bep854jo4peh"]
 
 [ext_resource type="Script" path="res://scripts/battle/battle_player.gd" id="1_e2tny"]
 [ext_resource type="Texture2D" uid="uid://dkfvfmk8mtabn" path="res://sprites/bullets/spr_bullet_0_dropshadow.png" id="2_2b7nw"]
 [ext_resource type="Texture2D" uid="uid://dx6vyfrcmvdkt" path="res://sprites/battle/players/priest/spr_battle_player_priest.png" id="3_1u1b1"]
 [ext_resource type="Texture2D" uid="uid://csu5yk74v7my6" path="res://sprites/battle/players/spr_battle_hitbox.png" id="4_eq2r7"]
-[ext_resource type="PackedScene" uid="uid://bmr3p5bud2r7q" path="res://prefabs/battle/player_shots/regular/prefab_battle_player_shot_regular.tscn" id="5_7nwnu"]
 [ext_resource type="Texture2D" uid="uid://bbxcvh0rto3lb" path="res://sprites/basic/spr_rect.png" id="5_15tmq"]
 [ext_resource type="FontFile" uid="uid://bdek8dxu43hp4" path="res://fonts/font_renogare_regular.otf" id="5_wy0xu"]
-[ext_resource type="Script" path="res://scripts/battle/player_shot/detonator/battle_player_shot_detonator.gd" id="6_b58gj"]
 
 [node name="Player" type="Node2D"]
 script = ExtResource("1_e2tny")
@@ -26,16 +24,11 @@ region_enabled = true
 region_rect = Rect2(0, 0, 64, 48)
 
 [node name="Hitbox" type="Sprite2D" parent="."]
+visible = false
 z_index = 2
 texture_filter = 1
 scale = Vector2(2, 2)
 texture = ExtResource("4_eq2r7")
-
-[node name="ShotRegular" parent="." instance=ExtResource("5_7nwnu")]
-visible = false
-
-[node name="ShotDetonator" type="Node2D" parent="."]
-script = ExtResource("6_b58gj")
 
 [node name="Control" type="Control" parent="."]
 layout_mode = 3

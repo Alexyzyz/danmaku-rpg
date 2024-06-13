@@ -34,7 +34,6 @@ func destroy():
 
 func _move(p_delta: float):
 	var new_pos: Vector2 = position + p_delta * _speed * _direction
-	print(new_pos)
 	if BattleManager.is_oob(new_pos):
 		destroy()
 		return

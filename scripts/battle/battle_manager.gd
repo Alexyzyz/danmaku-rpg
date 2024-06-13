@@ -15,20 +15,23 @@ static var battle_area_west_x: float
 static var battle_area_east_x: float
 static var battle_area_north_y: float
 static var battle_area_south_y: float
-# Delta time
-static var delta_scale: float = 1
 
 static var _enemy_list: Array[Node2D]
 static var _minor_enemy_list: Array[Node2D]
 static var _hit_freeze_alarm: float
+# Delta time
+static var _unscaled_delta: float
+static var _delta_scale: float = 1
+static var _delta_scale_camera: float = 1
 # Prefabs
 static var _prefab_enemy: PackedScene
 static var _prefab_enemy_bullet: PackedScene
 static var _prefab_ripple: PackedScene
 static var _prefab_enemy_ripple: PackedScene
 # Parents
-static var _parent_level: Node
-static var _parent_top_left: Node2D
+static var _parent_battle: Node
+static var _parent_battle_top_left: Node2D
+static var _parent_skill_camera_photos: Node2D
 static var _parent_enemy: Node2D
 static var _parent_enemy_bullets: Node2D
 static var _parent_player_shots: Node2D
@@ -52,11 +55,13 @@ func _ready():
 	BattleBulletManager.set_up()
 	_set_up_battle()
 	
-	_obj_player.set_up(UtilShotType.DETONATOR)
+	_obj_player.set_up(UtilShotType.DETONATOR, UtilSkill.CAMERA)
 
 
 func _process(p_delta: float):
-	var scaled_delta: float = p_delta * delta_scale
+	_unscaled_delta = p_delta
+	
+	var scaled_delta: float = p_delta * _delta_scale * _delta_scale_camera
 	
 	_obj_player.update(scaled_delta)
 	_update_enemies(scaled_delta)
@@ -69,8 +74,24 @@ func _process(p_delta: float):
 
 # Public functions
 
+static func get_unscaled_delta() -> float:
+	return _unscaled_delta
+
+
+static func set_camera_delta_scale(p_scale: float):
+	_delta_scale_camera = p_scale
+
+
 static func get_player() -> BattlePlayer:
 	return _obj_player
+
+
+static func get_battle_parent() -> Node2D:
+	return _parent_battle
+
+
+static func get_battle_arena_parent() -> Node2D:
+	return _parent_battle_top_left
 
 
 static func get_enemies() -> Array[BattleEnemy]:
@@ -90,14 +111,14 @@ static func add_minor_enemy(p_minor_enemy: Node2D):
 
 
 static func handle_player_hit():
-	_spawn_ripple(_obj_player.position)
-	delta_scale = 0
+	spawn_ripple(_obj_player.position)
+	_delta_scale = 0
 	_hit_freeze_alarm = HIT_FREEZE_TIME
 	pass
 
 
 static func handle_enemy_defeat(p_enemy: BattleEnemy):
-	_spawn_ripple(p_enemy.position)
+	spawn_ripple(p_enemy.position)
 	_enemy_list.erase(p_enemy)
 	p_enemy.queue_free()
 	
@@ -109,9 +130,15 @@ static func handle_enemy_defeat(p_enemy: BattleEnemy):
 
 
 static func handle_minor_enemy_defeat(p_minor_enemy: Node2D):
-	_spawn_ripple(p_minor_enemy.position)
+	spawn_ripple(p_minor_enemy.position)
 	_minor_enemy_list.erase(p_minor_enemy)
 	p_minor_enemy.queue_free()
+
+
+static func spawn_ripple(p_pos: Vector2):
+	var ripple: BattleMiscRipple = _prefab_ripple.instantiate()
+	_parent_battle_top_left.add_child(ripple)
+	ripple.set_up(p_pos)
 
 
 # Private functions
@@ -127,8 +154,9 @@ func _set_up_objects():
 	_obj_player = $"../Level/Node2D/TopLeft/Player"
 	_obj_background_scene = $"../Level/Background/SubViewportContainer/SubViewport/BackgroundScene"
 	
-	_parent_level = $"../Level"
-	_parent_top_left = $"../Level/Node2D/TopLeft"
+	_parent_battle = $"../Level/Node2D"
+	_parent_battle_top_left = $"../Level/Node2D/TopLeft"
+	_parent_skill_camera_photos = $"../Level/Node2D/TopLeft/SkillCameraPhotoParent"
 	_parent_enemy = $"../Level/Node2D/TopLeft/EnemyParent"
 	_parent_enemy_bullets = $"../Level/Node2D/TopLeft/EnemyBulletParent"
 	_parent_player_shots = $"../Level/Node2D/TopLeft/PlayerShotParent"
@@ -152,9 +180,9 @@ func _set_up_battle():
 		BattleEnemyTimekeeperFast,
 		# BattleBossMiscScatter,
 		# BattleEnemyNatureTriangleAimer,
-		# BattleEnemyDandelion,
-		# BattleEnemyDenseRing,
-		BattleEnemyWindSuck,
+		BattleEnemyDandelion,
+		BattleEnemyDenseRing,
+		# BattleEnemyWindSuck,
 	]
 	var spawn_region_start: Vector2 = Vector2(0, 0)
 	var spawn_region_end: Vector2 = Vector2(battle_area_size.x, battle_area_size.y)
@@ -187,7 +215,7 @@ func _set_up_battle_area():
 	origin_from_top_left = origin_from_center - battle_area_size / 2
 	
 	# Every object in the battle area will now be shifted here
-	_parent_top_left.position = origin_from_top_left
+	_parent_battle_top_left.position = origin_from_top_left
 	
 	battle_area_west_x = 0
 	battle_area_east_x = battle_area_width
@@ -198,7 +226,7 @@ func _set_up_battle_area():
 func _handle_hit_freeze(p_delta: float):
 	if _hit_freeze_alarm <= 0:
 		_hit_freeze_alarm = 0
-		delta_scale = 1
+		_delta_scale = 1
 		return
 	_hit_freeze_alarm -= p_delta
 	
@@ -208,7 +236,7 @@ func _handle_hit_freeze(p_delta: float):
 		return
 	
 	var tt: float = (HIT_FREEZE_REBOUND_T - t) / HIT_FREEZE_REBOUND_T
-	delta_scale = lerp(0, 1, tt)
+	_delta_scale = lerp(0, 1, tt)
 	pass
 
 
@@ -224,11 +252,10 @@ func _update_background_scene(p_delta: float):
 		_obj_background_scene.update(p_delta)
 
 
-static func _spawn_ripple(p_pos: Vector2):
-	var ripple: BattleMiscRipple = _prefab_ripple.instantiate()
-	_parent_top_left.add_child(ripple)
-	ripple.set_up(p_pos)
+# Private functions ✦ Delta scaling
 
+func _handle_delta_scaling(p_delta: float):
+	pass
 
 # Debug methods
 

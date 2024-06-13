@@ -1,7 +1,7 @@
-class_name BattlePlayerShotDetonator
+class_name BattleShotDetonator
 extends Node2D
 
-const SHOOT_COOLDOWN_TIME: float = 1
+const SHOOT_COOLDOWN_TIME: float = 0
 
 const SHOT_DAMAGE_MIN: float = 10
 const SHOT_DAMAGE_MAX: float = 80
@@ -26,7 +26,7 @@ var _prefab_shot: PackedScene
 
 func set_up():
 	_player = BattleManager.get_player()
-	_prefab_shot = preload("res://prefabs/battle/player_shots/detonator/prefab_battle_player_shot_detonator_projectile.tscn")
+	_prefab_shot = preload("res://prefabs/battle/shots/detonator/prefab_battle_shot_detonator_projectile.tscn")
 
 
 func update(p_delta: float):
@@ -60,7 +60,7 @@ func _handle_shoot_input(p_delta: float):
 		return
 	
 	# CASE 1 ✦ Launch a projectile
-	var new_shot: BattlePlayerShotDetonatorProjectile = _prefab_shot.instantiate()
+	var new_shot: BattleShotDetonatorProjectile = _prefab_shot.instantiate()
 	BattleManager._parent_player_shots.add_child(new_shot)
 	_projectile = new_shot
 	new_shot.set_up(
@@ -69,8 +69,8 @@ func _handle_shoot_input(p_delta: float):
 
 
 func _handle_aim_inputs(p_delta: float):
-	var aim_left: int = 1 if Input.is_action_pressed("game_aim_left") else 0
-	var aim_right: int = 1 if Input.is_action_pressed("game_aim_right") else 0
+	var aim_left: int = 1 if Input.is_action_pressed("battle_aim_left") else 0
+	var aim_right: int = 1 if Input.is_action_pressed("battle_aim_right") else 0
 	var aim_axis: int = aim_right - aim_left
 	
 	if aim_axis == 0:

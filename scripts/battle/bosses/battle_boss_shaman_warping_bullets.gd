@@ -41,7 +41,7 @@ class RingAttack:
 	func shoot():
 		BattleBulletManager.shoot_bullet_ring(
 			_parent.position,
-			UtilMath.get_angle_from_vector(BattleManager.obj_player.position - _parent.position) + _angle,
+			UtilMath.get_angle_from_vector(BattleManager.get_player().position - _parent.position) + _angle,
 			300,
 			11,
 			UtilBulletResource.default)

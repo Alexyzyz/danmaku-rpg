@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://c8an7pn40sp3f"]
+
+[ext_resource type="Script" path="res://scripts/battle/skills/camera/battle_skill_camera.gd" id="1_njyal"]
+
+[node name="SkillCamera" type="Node2D"]
+script = ExtResource("1_njyal")

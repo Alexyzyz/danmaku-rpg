@@ -10,8 +10,10 @@ const GRAZE_RADIUS: float = 50
 const HITBOX_RADIUS: float = 3
 
 var _shot_manager: Node2D
+var _skill_manager: Node2D
 var _is_focused: bool
 var _invincible_alarm: float
+var _can_move: float = true
 var _move_dir: Vector2
 
 var _debug_grazed_count: int
@@ -22,11 +24,16 @@ var _debug_closest_distance: float
 
 # Main methods
 
-func set_up(p_shot_manager_prefab: PackedScene):
+func set_up(p_shot_manager_prefab: PackedScene, p_skill_manager_prefab: PackedScene):
 	var shot_manager: Node2D = p_shot_manager_prefab.instantiate()
-	shot_manager.set_up()
-	_shot_manager = shot_manager
 	add_child(shot_manager)
+	_shot_manager = shot_manager
+	shot_manager.set_up()
+	
+	var skill_manager: Node2D = p_skill_manager_prefab.instantiate()
+	add_child(skill_manager)
+	_skill_manager = skill_manager
+	skill_manager.set_up()
 
 
 # Public methods
@@ -35,7 +42,9 @@ func update(p_delta: float):
 	if p_delta == 0:
 		return
 	
-	_handle_shoot(p_delta)
+	_shot_manager.update(p_delta)
+	_skill_manager.update(p_delta)
+	
 	_handle_move_inputs(p_delta)
 	_handle_focus_input()
 	_handle_invincibility(p_delta)
@@ -55,17 +64,20 @@ func get_rect():
 		position.y + HITBOX_RADIUS).abs()
 
 
+func toggle_can_move(p_state: bool):
+	_can_move = p_state
+
+
 func push(p_push_dir: Vector2):
 	_move_dir += p_push_dir
 
 
 # Private methods
 
-func _handle_shoot(p_delta: float):
-	_shot_manager.update(p_delta)
-
-
 func _handle_move_inputs(_p_delta: float):
+	if not _can_move:
+		return
+	
 	var direction = UtilMovement.get_direction_vector()
 	var speed = BASE_FOCUS_SPEED if _is_focused else BASE_SPEED
 	_move_dir += speed * direction
@@ -79,7 +91,7 @@ func _handle_move_inputs(_p_delta: float):
 
 
 func _handle_focus_input():
-	_is_focused = Input.is_action_pressed("game_focus")
+	_is_focused = Input.is_action_pressed("battle_focus")
 	child_hitbox.visible = _is_focused
 
 

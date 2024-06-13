@@ -24,7 +24,7 @@ var _prefab_shot: PackedScene
 
 func set_up():
 	_player = BattleManager.get_player()
-	_prefab_shot = preload("res://prefabs/battle/player_shots/regular/prefab_battle_player_shot_regular_projectile.tscn")
+	_prefab_shot = preload("res://prefabs/battle/shots/regular/prefab_battle_shot_regular_projectile.tscn")
 
 
 func update(p_delta: float):
