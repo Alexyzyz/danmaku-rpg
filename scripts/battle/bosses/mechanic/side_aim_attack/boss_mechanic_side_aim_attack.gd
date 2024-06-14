@@ -46,7 +46,7 @@ func _handle_spawn_minion_attack(delta):
 		spawn_pos.y = 0
 	
 	var new_minion: BossMechanicSideAimAttackMinion = prefab_minion.instantiate()	
-	BattleManager._parent_top_left.add_child(new_minion)
+	BattleManager._parent_battle_top_left.add_child(new_minion)
 	minion_list.append(new_minion)
 	
 	new_minion.set_up(spawn_pos, PI / 2, 120)

@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://cxds8kep1nb5a"]
+[gd_scene load_steps=19 format=3 uid="uid://cxds8kep1nb5a"]
 
 [ext_resource type="Script" path="res://scripts/battle/battle_manager.gd" id="1_i1myg"]
 [ext_resource type="Script" path="res://scripts/battle/battle_bullet_manager.gd" id="2_5f0pi"]
@@ -11,7 +11,6 @@
 [ext_resource type="FontFile" uid="uid://dxbpm2sd8oeww" path="res://fonts/font_seven_segment.ttf" id="5_nrgkv"]
 [ext_resource type="PackedScene" uid="uid://dxxatojl4t8tc" path="res://prefabs/debug/prefab_debug_cell.tscn" id="7_mj0hw"]
 [ext_resource type="Script" path="res://scripts/battle/ui/battle_ui_shot_damage_manager.gd" id="8_4g74y"]
-[ext_resource type="PackedScene" uid="uid://bihphj3p53u14" path="res://prefabs/battle/skills/camera/prefab_battle_skill_camera_photo.tscn" id="8_33nqj"]
 [ext_resource type="PackedScene" uid="uid://b7ceonu4ae3dp" path="res://prefabs/battle/ui/prefab_battle_ui_shot_damage_number.tscn" id="9_2in8s"]
 [ext_resource type="Texture2D" uid="uid://boslm2rwisixj" path="res://sprites/debug/spr_debug_clouds.png" id="12_dpixh"]
 [ext_resource type="PackedScene" uid="uid://bb830hf157jij" path="res://prefabs/battle/misc/prefab_battle_misc_ripple.tscn" id="13_0iao5"]
@@ -125,8 +124,6 @@ script = ExtResource("2_5f0pi")
 
 [node name="SkillCameraPhotoParent" type="Node2D" parent="Level/Node2D/TopLeft"]
 position = Vector2(700, 100)
-
-[node name="SkillCameraPhoto" parent="Level/Node2D/TopLeft" instance=ExtResource("8_33nqj")]
 
 [node name="Control" type="Control" parent="Level"]
 layout_mode = 3

@@ -1,19 +1,20 @@
 class_name BattleSkillCamera
 extends Node2D
 
+const MAX_PHOTO_COUNT: int = 5
+
 const ZOOM_DURATION_MAX: float = 1
 const ZOOM_DELTA_SCALE: float = 0.5
 
 const VIEWFINDER_IDLE_DISTANCE: float = 100
 const VIEWFINDER_SPEED: float = 500
-const VIEWFINDER_SCALE_MAX: float = 1
-const VIEWFINDER_SCALE_MIN: float = 0.5
 
 var _player: BattlePlayer
 var _viewfinder: BattleSkillCameraViewfinder
 var _is_aiming: bool
 var _zoom_duration: float
 var _photo_index: int
+var _photo_list: Array[BattleSkillCameraPhoto]
 # Viewfinder
 var _viewfinder_scale: float
 # Prefabs
@@ -28,6 +29,7 @@ func set_up():
 	
 	_player = BattleManager.get_player()
 	_viewfinder = _prefab_viewfinder.instantiate()
+	_viewfinder.zoom(0)
 	_player.add_child(_viewfinder)
 
 
@@ -44,7 +46,7 @@ func update(_p_delta: float):
 func _handle_skill_input(p_delta: float):
 	if Input.is_action_just_released("battle_skill"):
 		if _is_aiming:
-			_shoot(p_delta)
+			_shoot()
 			return
 	
 	if Input.is_action_just_pressed("battle_skill"):
@@ -69,11 +71,11 @@ func _handle_aiming_inputs(p_delta: float):
 	
 	_zoom_duration += p_delta
 	if _zoom_duration > ZOOM_DURATION_MAX:
-		_shoot(p_delta)
+		_shoot()
 		return
 	
 	var t: float = _zoom_duration / ZOOM_DURATION_MAX
-	_viewfinder.scale = Vector2.ONE * lerp(VIEWFINDER_SCALE_MAX, VIEWFINDER_SCALE_MIN, t)
+	_viewfinder.zoom(t)
 	pass
 
 
@@ -84,27 +86,41 @@ func _handle_idle_viewfinder(p_delta):
 	pass
 
 
-func _shoot(p_delta: float):
+func _shoot():
 	BattleManager.set_camera_delta_scale(1)
 	_player.toggle_can_move(true)
 	_is_aiming = false
 	_zoom_duration = 0
 	
-	_viewfinder.clear_bullets()
-	_viewfinder.rotation = 0
-	_viewfinder.scale = Vector2.ONE * VIEWFINDER_SCALE_MAX
-	
+	# _viewfinder.visible = true
+	# await get_tree().process_frame
 	_generate_photo()
+	# _viewfinder.visible = true
+	
+	_viewfinder.clear_bullets()
+	_viewfinder.damage_enemies()
+	_viewfinder.rotation = 0
+	_viewfinder.zoom(0)
 	pass
 
 
 func _generate_photo():
 	var texture := ImageTexture.new()
-	texture = texture.create_from_image(_viewfinder.get_photo_image())
+	var image: Image = _viewfinder.get_photo_image()
+	# HACK: To counter-act the weird rotation caused by waiting for the next render cycle
+	image.rotate_90(COUNTERCLOCKWISE)
+	texture = texture.create_from_image(image)
 	
-	var photo: BattleSkillCameraPhoto = _prefab_photo.instantiate()
-	BattleManager.get_battle_arena_parent().add_child(photo)
-	photo.set_up(texture, _viewfinder.global_position, _viewfinder.rotation, _photo_index)
-	_photo_index += 1
+	var new_photo: BattleSkillCameraPhoto = _prefab_photo.instantiate()
+	BattleManager.get_battle_arena_parent().add_child(new_photo)
+	new_photo.set_up(texture, _viewfinder.global_position, _viewfinder.rotation, _viewfinder.scale, 0)
+	
+	for photo in _photo_list:
+		if not is_instance_valid(photo):
+			_photo_list.erase(photo)
+			continue
+		photo.shift_down()
+	_photo_list.push_back(new_photo)
+	
 	pass
 

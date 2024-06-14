@@ -4,9 +4,10 @@ extends Node2D
 var movement: MovementData = MovementData.new()
 var is_broken: bool = false
 
-@onready var _bullet_texture = preload("res://sprites/bullets/spr_bullet_0.png")
+@onready var _bullet_texture: Texture2D
 
 func _ready():
+	_bullet_texture = preload("res://sprites/bullets/spr_bullet_0.png")
 	pass
 
 func _process(delta):
