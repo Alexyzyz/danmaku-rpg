@@ -25,10 +25,10 @@ static var _delta_scale: float = 1
 static var _delta_scale_camera: float = 1
 # Prefabs
 static var _prefab_enemy: PackedScene
-static var _prefab_enemy_bullet: PackedScene
 static var _prefab_ripple: PackedScene
 static var _prefab_enemy_ripple: PackedScene
 # Parents
+static var _parent_level: Node
 static var _parent_battle: Node
 static var _parent_battle_top_left: Node2D
 static var _parent_skill_camera_photos: Node2D
@@ -40,6 +40,7 @@ static var _parent_debug: Node2D
 # Important objects
 static var _obj_player: BattlePlayer
 static var _obj_background_scene: Node3D
+static var _obj_skill_camera_background_dark: ColorRect
 # Resources
 static var _sprite_bullet_default = preload("res://sprites/bullets/spr_bullet_0.png")
 static var _sprite_bullet_default_dropshadow = preload("res://sprites/bullets/spr_bullet_0_dropshadow.png")
@@ -111,7 +112,7 @@ static func add_minor_enemy(p_minor_enemy: Node2D):
 
 
 static func handle_player_hit():
-	spawn_ripple(_obj_player.position)
+	spawn_ripple(_obj_player.global_position)
 	_delta_scale = 0
 	_hit_freeze_alarm = HIT_FREEZE_TIME
 	pass
@@ -137,23 +138,28 @@ static func handle_minor_enemy_defeat(p_minor_enemy: Node2D):
 
 static func spawn_ripple(p_pos: Vector2):
 	var ripple: BattleMiscRipple = _prefab_ripple.instantiate()
-	_parent_battle_top_left.add_child(ripple)
+	_parent_level.get_node("DebugA").add_child(ripple)
 	ripple.set_up(p_pos)
+
+
+static func skill_camera_toggle_background(p_state: bool):
+	_obj_skill_camera_background_dark.visible = p_state
 
 
 # Private functions
 
 func _set_up_prefabs():
 	_prefab_enemy = preload("res://prefabs/prefab_enemy.tscn")
-	_prefab_enemy_bullet = preload("res://prefabs/prefab_bullet.tscn")
 	_prefab_ripple = preload("res://prefabs/battle/misc/prefab_battle_misc_ripple.tscn")
 	_prefab_enemy_ripple = preload("res://prefabs/battle/misc/prefab_battle_misc_enemy_ripple.tscn")
 
 
 func _set_up_objects():
 	_obj_player = $"../Level/Node2D/TopLeft/Player"
+	_obj_skill_camera_background_dark = $"../Level/SkillCameraBackground"
 	_obj_background_scene = $"../Level/Background/SubViewportContainer/SubViewport/BackgroundScene"
 	
+	_parent_level = $"../Level"
 	_parent_battle = $"../Level/Node2D"
 	_parent_battle_top_left = $"../Level/Node2D/TopLeft"
 	_parent_skill_camera_photos = $"../Level/Node2D/TopLeft/SkillCameraPhotoParent"
@@ -171,16 +177,18 @@ func _set_up_battle():
 	var behavior_list: Array[Script] = [
 		# BattleEnemyElitePriest,
 		# BattleEnemyNatureTriangleAimer,
-		BattleEnemyDandelion,
+		# BattleEnemyDandelion,
 		# BattleBossMiscMajorSwarms,
 		# BattleBossMiscMajorSphere,
 		# BattleBossMiscScatter,
 	]
 	var fixed_behavior_list: Array[Script] = [
-		BattleEnemyTimekeeperFast,
+		# BattleEnemyTimekeeperFast,
 		# BattleBossMiscScatter,
-		# BattleEnemyNatureTriangleAimer,
-		BattleEnemyDandelion,
+		# BattleBossRivalSpin,
+		BattleEnemyNatureTriangleAimer,
+		BattleEnemyNatureTriangleAimer,
+		# BattleEnemyDandelion,
 		BattleEnemyDenseRing,
 		# BattleEnemyWindSuck,
 	]

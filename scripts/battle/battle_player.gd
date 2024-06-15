@@ -148,6 +148,7 @@ func _handle_on_hit():
 	if _invincible_alarm > 0:
 		return
 	# position = Vector2(BattleManager.battle_area_size.x / 2, BattleManager.battle_area_south_y - 100)
+	_skill_manager.handle_player_hit()
 	BattleManager.handle_player_hit()
 	_invincible_alarm = INVINCIBLE_TIME
 

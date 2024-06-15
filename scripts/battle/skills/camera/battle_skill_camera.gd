@@ -7,6 +7,7 @@ const ZOOM_DURATION_MAX: float = 1
 const ZOOM_DELTA_SCALE: float = 0.5
 
 const VIEWFINDER_IDLE_DISTANCE: float = 100
+const VIEWFINDER_IDLE_ALPHA: float = 0.3
 const VIEWFINDER_SPEED: float = 500
 
 var _player: BattlePlayer
@@ -30,7 +31,10 @@ func set_up():
 	_player = BattleManager.get_player()
 	_viewfinder = _prefab_viewfinder.instantiate()
 	_viewfinder.zoom(0)
+	_viewfinder.modulate.a = VIEWFINDER_IDLE_ALPHA
 	_player.add_child(_viewfinder)
+	
+	BattleManager._obj_skill_camera_background_dark.viewfinder = _viewfinder
 
 
 func update(_p_delta: float):
@@ -39,6 +43,11 @@ func update(_p_delta: float):
 	_handle_aiming_inputs(unscaled_delta)
 	_handle_idle_viewfinder(unscaled_delta)
 	pass
+
+
+func handle_player_hit():
+	if _is_aiming:
+		_shoot()
 
 
 # Private methods
@@ -52,6 +61,8 @@ func _handle_skill_input(p_delta: float):
 	if Input.is_action_just_pressed("battle_skill"):
 		if not _is_aiming:
 			BattleManager.set_camera_delta_scale(0.3)
+			BattleManager.skill_camera_toggle_background(true)
+			_viewfinder.modulate.a = 1
 			_player.toggle_can_move(false)
 			_is_aiming = true
 
@@ -68,6 +79,7 @@ func _handle_aiming_inputs(p_delta: float):
 	
 	_viewfinder.position += p_delta * VIEWFINDER_SPEED * direction
 	_viewfinder.look_at(_player.global_position)
+	_viewfinder.rotate(-PI / 2)
 	
 	_zoom_duration += p_delta
 	if _zoom_duration > ZOOM_DURATION_MAX:
@@ -88,6 +100,8 @@ func _handle_idle_viewfinder(p_delta):
 
 func _shoot():
 	BattleManager.set_camera_delta_scale(1)
+	BattleManager.skill_camera_toggle_background(false)
+	_viewfinder.modulate.a = VIEWFINDER_IDLE_ALPHA
 	_player.toggle_can_move(true)
 	_is_aiming = false
 	_zoom_duration = 0
@@ -108,7 +122,7 @@ func _generate_photo():
 	var texture := ImageTexture.new()
 	var image: Image = _viewfinder.get_photo_image()
 	# HACK: To counter-act the weird rotation caused by waiting for the next render cycle
-	image.rotate_90(COUNTERCLOCKWISE)
+	# image.rotate_90(COUNTERCLOCKWISE)
 	texture = texture.create_from_image(image)
 	
 	var new_photo: BattleSkillCameraPhoto = _prefab_photo.instantiate()

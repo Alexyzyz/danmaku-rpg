@@ -23,7 +23,7 @@ func _handle_lane_attack(delta: float):
 	_lane_attack_a.wing_direction *= -1
 	
 	var aim_direction: float = UtilMath.get_angle_from_vector(BattleManager.get_player().position - position)
-	var modify_bullet: Callable = func(bullet: BattleBullet, i: int):
+	var modify_bullet: Callable = func(bullet: Bullet, i: int):
 		if _lane_attack_a.wing_direction == 1:
 			bullet.movement.speed = 80 + i * 10
 		else:

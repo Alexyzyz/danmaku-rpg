@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://cxds8kep1nb5a"]
+[gd_scene load_steps=22 format=3 uid="uid://cxds8kep1nb5a"]
 
 [ext_resource type="Script" path="res://scripts/battle/battle_manager.gd" id="1_i1myg"]
 [ext_resource type="Script" path="res://scripts/battle/battle_bullet_manager.gd" id="2_5f0pi"]
@@ -8,7 +8,9 @@
 [ext_resource type="Script" path="res://scripts/debug/battle_debug_manager.gd" id="4_hke2r"]
 [ext_resource type="PackedScene" uid="uid://bep854jo4peh" path="res://prefabs/prefab_player.tscn" id="5_5bs35"]
 [ext_resource type="Script" path="res://scripts/battle/ui/battle_ui_enemy_remaining.gd" id="5_a22s8"]
+[ext_resource type="Shader" path="res://shaders/shader_skill_camera_viewfinder.gdshader" id="5_fl77j"]
 [ext_resource type="FontFile" uid="uid://dxbpm2sd8oeww" path="res://fonts/font_seven_segment.ttf" id="5_nrgkv"]
+[ext_resource type="Script" path="res://scripts/battle/skills/camera/battle_skill_camera_background.gd" id="6_bcw0f"]
 [ext_resource type="PackedScene" uid="uid://dxxatojl4t8tc" path="res://prefabs/debug/prefab_debug_cell.tscn" id="7_mj0hw"]
 [ext_resource type="Script" path="res://scripts/battle/ui/battle_ui_shot_damage_manager.gd" id="8_4g74y"]
 [ext_resource type="PackedScene" uid="uid://b7ceonu4ae3dp" path="res://prefabs/battle/ui/prefab_battle_ui_shot_damage_number.tscn" id="9_2in8s"]
@@ -27,6 +29,12 @@ size = Vector2(5, 5)
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_doykg"]
 shader = ExtResource("15_jht4d")
 shader_parameter/wave_radius = 1.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_bw37g"]
+shader = ExtResource("5_fl77j")
+shader_parameter/viewfinder_position = Vector2(360, 369)
+shader_parameter/viewfinder_rotation = 0.0
+shader_parameter/viewfinder_scale = null
 
 [node name="Root" type="Node"]
 
@@ -79,9 +87,11 @@ visible = false
 
 [node name="BackgroundShader" type="Control" parent="Level"]
 layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="EnemyRippleShader" type="ColorRect" parent="Level/BackgroundShader"]
 visible = false
@@ -99,6 +109,22 @@ offset_bottom = 631.0
 grow_horizontal = 2
 grow_vertical = 2
 pivot_offset = Vector2(200, 200)
+
+[node name="DebugA" type="Control" parent="Level"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1366.0
+offset_bottom = 768.0
+
+[node name="SkillCameraBackground" type="ColorRect" parent="Level"]
+visible = false
+material = SubResource("ShaderMaterial_bw37g")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("6_bcw0f")
 
 [node name="Node2D" type="Node2D" parent="Level"]
 

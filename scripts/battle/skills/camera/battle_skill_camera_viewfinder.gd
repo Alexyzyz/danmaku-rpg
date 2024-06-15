@@ -1,8 +1,8 @@
 class_name BattleSkillCameraViewfinder
 extends Node2D
 
-const SIZE := Vector2(120, 120)
-const SCALE_MAX: float = 1.25
+const SIZE := Vector2(120, 90)
+const SCALE_MAX: float = 1.5
 const SCALE_MIN: float = 0.5
 
 var _damage: float

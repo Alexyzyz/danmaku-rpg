@@ -1,12 +1,22 @@
-[gd_scene load_steps=3 format=3 uid="uid://bihphj3p53u14"]
+[gd_scene load_steps=2 format=3 uid="uid://bihphj3p53u14"]
 
 [ext_resource type="Script" path="res://scripts/battle/skills/camera/battle_skill_camera_photo.gd" id="1_tjd7r"]
-[ext_resource type="Texture2D" uid="uid://bbxcvh0rto3lb" path="res://sprites/basic/spr_rect.png" id="2_kafm6"]
 
 [node name="SkillCameraPhoto" type="Node2D"]
 script = ExtResource("1_tjd7r")
 
-[node name="Back" type="Sprite2D" parent="."]
-texture = ExtResource("2_kafm6")
+[node name="Back" type="ColorRect" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -65.0
+offset_top = -50.0
+offset_right = 65.0
+offset_bottom = 50.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(65, 50)
 
-[node name="Sprite" type="Sprite2D" parent="."]
+[node name="Photo" type="Sprite2D" parent="."]

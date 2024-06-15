@@ -16,7 +16,7 @@ var delta_scale: float
 var resource: BulletResource
 var color: Color
 # Custom behavior per tick
-var on_tick: Callable
+var behavior
 
 # Object pooling stuff
 var is_active: bool
@@ -50,6 +50,7 @@ func set_up(
 	is_deadly = true
 	delta_scale = 1
 	
+	behavior = null
 	_move_per_tick = true
 
 
@@ -61,6 +62,9 @@ func tick(p_delta: float):
 	var scaled_delta: float = delta_scale * p_delta
 	if _move_per_tick:
 		_move(scaled_delta)
+	if behavior != null:
+		if behavior.has_method("update"):
+			behavior.update(p_delta)
 
 
 func toggle_move_per_tick(p_state: bool):

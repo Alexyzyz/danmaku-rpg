@@ -1,16 +1,25 @@
-[gd_scene load_steps=4 format=3 uid="uid://ddq7hg28tp7w2"]
+[gd_scene load_steps=5 format=3 uid="uid://ddq7hg28tp7w2"]
 
 [ext_resource type="Texture2D" uid="uid://c0qjfvdbd5kc4" path="res://sprites/battle/skills/filly_camera/spr_battle_skill_camera_viewfinder.png" id="1_au7f2"]
 [ext_resource type="Script" path="res://scripts/battle/skills/camera/battle_skill_camera_viewfinder.gd" id="1_dfylq"]
 [ext_resource type="Texture2D" uid="uid://br0s0nui0cy8u" path="res://sprites/battle/skills/filly_camera/spr_battle_skill_camera_crosshair.png" id="2_6nfmf"]
+[ext_resource type="Texture2D" uid="uid://bbxcvh0rto3lb" path="res://sprites/basic/spr_rect.png" id="3_g7jys"]
 
 [node name="SkillCameraViewfinder" type="Node2D"]
 script = ExtResource("1_dfylq")
+
+[node name="Back" type="Sprite2D" parent="."]
+visible = false
+self_modulate = Color(0, 0, 0, 0)
+position = Vector2(1.90735e-06, 1.90735e-06)
+scale = Vector2(0.9375, 0.9375)
+texture = ExtResource("3_g7jys")
 
 [node name="Viewfinder" type="Sprite2D" parent="."]
 texture_filter = 1
 texture = ExtResource("1_au7f2")
 
 [node name="Crosshair" type="Sprite2D" parent="."]
+visible = false
 texture_filter = 1
 texture = ExtResource("2_6nfmf")

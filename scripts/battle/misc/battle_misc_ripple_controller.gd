@@ -17,7 +17,7 @@ func _process(p_delta: float):
 # Private methods
 
 func set_up(p_position: Vector2):
-	position = p_position - size / 2
+	global_position = p_position - size / 2
 	_shader_tick = 0
 
 func _handle_shader(p_delta: float):
