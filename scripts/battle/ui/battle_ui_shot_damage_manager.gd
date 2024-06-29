@@ -3,7 +3,7 @@ extends Control
 
 const NUMBER_POOL_SIZE: int = 100
 
-static var _prefab_number: PackedScene = preload("res://prefabs/battle/ui/prefab_battle_ui_shot_damage_number.tscn")
+static var _prefab_number: PackedScene
 static var _number_list: Array[DamageNumber] = []
 static var _first_inactive_number: DamageNumber
 
@@ -42,6 +42,8 @@ static func despawn_damage_number(p_number: DamageNumber):
 # Private methods
 
 func _set_up():
+	_prefab_number = preload("res://prefabs/battle/ui/prefab_battle_ui_shot_damage_number.tscn")
+	
 	var prev: DamageNumber
 	for i in NUMBER_POOL_SIZE:
 		var instance: Label = _prefab_number.instantiate()

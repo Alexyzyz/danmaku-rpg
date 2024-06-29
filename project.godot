@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Danmaku RPG"
-run/main_scene="res://scenes/scene_battle.tscn"
+run/main_scene="res://scenes/scene_overworld.tscn"
 config/features=PackedStringArray("4.2", "Forward Plus")
 config/icon="res://icon.svg"
 

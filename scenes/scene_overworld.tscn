@@ -1,8 +1,9 @@
-[gd_scene load_steps=19 format=3 uid="uid://by51wg8284mb8"]
+[gd_scene load_steps=20 format=3 uid="uid://by51wg8284mb8"]
 
 [ext_resource type="SpriteFrames" uid="uid://cg8wc6xi0iasu" path="res://sprites/overworld/spr_frames_ow_player.tres" id="1_tcr5w"]
 [ext_resource type="Script" path="res://scripts/overworld/overworld_manager.gd" id="1_wja36"]
 [ext_resource type="Script" path="res://scripts/overworld/ui/ui_overworld_handbook.gd" id="2_evjeq"]
+[ext_resource type="ArrayMesh" uid="uid://3yeshubkdpj8" path="res://meshes/mesh_building_door.obj" id="2_f2jj4"]
 [ext_resource type="Texture2D" uid="uid://7dpdtpaj3v8m" path="res://sprites/basic/spr_rect_rounded.png" id="2_tci07"]
 [ext_resource type="Script" path="res://scripts/overworld/overworld_player.gd" id="2_u8e5f"]
 [ext_resource type="Script" path="res://scripts/dialogue/dialogue_box.gd" id="4_ub2jg"]
@@ -15,12 +16,12 @@
 [ext_resource type="Shader" path="res://shaders/shader_mask.gdshader" id="11_btk1u"]
 [ext_resource type="Texture2D" uid="uid://dlddw8di0tn86" path="res://sprites/dialogue_portraits/spr_dialogue_portrait_luke_1_bored.png" id="12_3222q"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_iuxv3"]
-albedo_color = Color(0.2736, 0.36, 0.2304, 1)
-metallic_specular = 0.0
+[sub_resource type="PlaneMesh" id="PlaneMesh_hs2wa"]
+size = Vector2(3, 3)
 
-[sub_resource type="QuadMesh" id="QuadMesh_a76pw"]
-material = SubResource("StandardMaterial3D_iuxv3")
+[sub_resource type="Environment" id="Environment_pg5fw"]
+ambient_light_source = 3
+ambient_light_color = Color(1, 1, 1, 1)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_yjaly"]
 shader = ExtResource("11_btk1u")
@@ -39,17 +40,21 @@ overworld_ui_menu = NodePath("../Control/Handbook")
 [node name="Geometry" type="Node3D" parent="Node3D"]
 
 [node name="Ground" type="MeshInstance3D" parent="Node3D/Geometry"]
-transform = Transform3D(3, 0, 0, 0, -1.31134e-07, 3, 0, -3, -1.31134e-07, 0, 0, 0)
-mesh = SubResource("QuadMesh_a76pw")
+transform = Transform3D(3, 0, 0, 0, 3, 5.24537e-07, 0, -5.24537e-07, 3, 0, 0, 0)
+mesh = SubResource("PlaneMesh_hs2wa")
 skeleton = NodePath("../../..")
 
+[node name="Door" type="MeshInstance3D" parent="Node3D/Geometry"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -2.45748, 0, -4.43025)
+mesh = ExtResource("2_f2jj4")
+
 [node name="Player" type="Node3D" parent="Node3D"]
-visible = false
 script = ExtResource("2_u8e5f")
 
 [node name="Sprite" type="AnimatedSprite3D" parent="Node3D/Player"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00218487, 0.030056, 0.0117893)
 offset = Vector2(0, 45)
-pixel_size = 0.004
+pixel_size = 0.04
 billboard = 2
 alpha_cut = 2
 texture_filter = 0
@@ -58,10 +63,14 @@ autoplay = "default"
 frame_progress = 0.402049
 
 [node name="Camera3D" type="Camera3D" parent="Node3D/Player"]
-transform = Transform3D(1, 0, 0, 0, 0.991218, 0.132239, 0, -0.132239, 0.991218, 0.0268238, 0.580483, 1.49958)
+transform = Transform3D(1, 0, 0, 0, 0.991218, 0.132239, 0, -0.132239, 0.991218, 0, 2.6, 5.8)
+environment = SubResource("Environment_pg5fw")
 
 [node name="OmniLight3D" type="OmniLight3D" parent="Node3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.127418, 0.163127, -0.218868)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0)
+light_energy = 4.0
+light_size = 2.0
+light_specular = 0.0
 omni_range = 32.0
 
 [node name="Node2D" type="Node2D" parent="."]
@@ -69,6 +78,7 @@ omni_range = 32.0
 [node name="DialogueParent" type="Node2D" parent="Node2D"]
 
 [node name="Dialogue" type="Node2D" parent="Node2D/DialogueParent"]
+visible = false
 position = Vector2(688, 438)
 script = ExtResource("4_ub2jg")
 

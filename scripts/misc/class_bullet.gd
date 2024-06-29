@@ -54,7 +54,7 @@ func set_up(
 	_move_per_tick = true
 
 
-func tick(p_delta: float):
+func update(p_delta: float):
 	if !is_active:
 		return
 	_update_graze()

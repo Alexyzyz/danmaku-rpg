@@ -195,7 +195,7 @@ static func _update_bullets(p_delta: float):
 	for bullet in _bullet_list:
 		if !bullet.is_active:
 			continue
-		bullet.tick(p_delta)
+		bullet.update(p_delta)
 
 
 func _move_bounce_on_screen(p_bullet: Bullet) -> Vector2:

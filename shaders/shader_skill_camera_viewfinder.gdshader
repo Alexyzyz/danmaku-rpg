@@ -17,33 +17,44 @@ void fragment() {
 	vec2 screen_resolution = 1.0 / SCREEN_PIXEL_SIZE;
 	vec2 current_pixel = SCREEN_UV * screen_resolution;
 	vec2 uv = FRAGCOORD.xy / screen_resolution.xy;
+	float base_darken = 0.5;
 	
 	vec2 viewfinder_size = viewfinder_scale * vec2(120, 90);
-	
-	float angle = viewfinder_rotation;
-	mat2 rotation = mat2(
-		vec2(cos(angle), sin(angle)),
-		vec2(-sin(angle), cos(angle))
-	);
-	
+	float x = viewfinder_position.x;
+	float y = viewfinder_position.y;
 	float w = viewfinder_size.x / 2.0;
 	float h = viewfinder_size.y / 2.0;
 	
-	vec2 a = viewfinder_position + (rotation * vec2(-w, -h));
-	vec2 b = viewfinder_position + (rotation * vec2( w, -h));
-	vec2 c = viewfinder_position + (rotation * vec2( w,  h));
-	vec2 d = viewfinder_position + (rotation * vec2(-w,  h));
-	vec2 p = current_pixel;
-	
-	float rectangle_area = viewfinder_size.x * viewfinder_size.y;
-	float sum_area = get_area(a, p, d) + get_area(d, p, c) + get_area(c, p, b) + get_area(p, b, a);
-	
-	float darken = 1.0;
-	// HACK: I had to subtract this arbitrary 0.1 because this thing flickers otherwise
-	if (sum_area - 0.1 > rectangle_area) {
-		darken = 0.5;
+	if (current_pixel.x > x - 2.0 * w &&
+		current_pixel.x < x + 2.0 * w &&
+		current_pixel.y > y - 2.0 * h &&
+		current_pixel.y < y + 2.0 * h) {
+		
+		float angle = viewfinder_rotation;
+		mat2 rotation = mat2(
+			vec2(cos(angle), sin(angle)),
+			vec2(-sin(angle), cos(angle))
+		);
+		
+		vec2 a = viewfinder_position + (rotation * vec2(-w, -h));
+		vec2 b = viewfinder_position + (rotation * vec2( w, -h));
+		vec2 c = viewfinder_position + (rotation * vec2( w,  h));
+		vec2 d = viewfinder_position + (rotation * vec2(-w,  h));
+		vec2 p = current_pixel;
+		
+		float rectangle_area = viewfinder_size.x * viewfinder_size.y;
+		float sum_area = get_area(a, p, d) + get_area(d, p, c) + get_area(c, p, b) + get_area(p, b, a);
+		
+		float darken = 1.0;
+		if (sum_area - 0.1 > rectangle_area) {
+			darken = base_darken;
+		}
+		
+		vec4 base_texture = texture(SCREEN_TEXTURE, uv);
+		COLOR = vec4(darken * base_texture.rgb, base_texture.a);
+	} else {
+		
+		vec4 base_texture = texture(SCREEN_TEXTURE, uv);
+		COLOR = vec4(base_darken * base_texture.rgb, base_texture.a);
 	}
-	
-	vec4 originalColor = texture(SCREEN_TEXTURE, uv);
-	COLOR = vec4(originalColor.rgb * darken, originalColor.a);
 }

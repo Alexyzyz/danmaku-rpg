@@ -27,6 +27,7 @@ static var _delta_scale_camera: float = 1
 static var _prefab_enemy: PackedScene
 static var _prefab_ripple: PackedScene
 static var _prefab_enemy_ripple: PackedScene
+static var _prefab_scene_overworld: PackedScene
 # Parents
 static var _parent_level: Node
 static var _parent_battle: Node
@@ -38,19 +39,20 @@ static var _parent_player_shots: Node2D
 static var _parent_background_shader: Control
 static var _parent_debug: Node2D
 # Important objects
+static var _scene_tree: SceneTree
 static var _obj_player: BattlePlayer
 static var _obj_background_scene: Node3D
 static var _obj_skill_camera_background_dark: ColorRect
 # Resources
-static var _sprite_bullet_default = preload("res://sprites/bullets/spr_bullet_0.png")
-static var _sprite_bullet_default_dropshadow = preload("res://sprites/bullets/spr_bullet_0_dropshadow.png")
+static var _sprite_bullet_default: CompressedTexture2D
+static var _sprite_bullet_default_dropshadow: CompressedTexture2D
 
 static var _debug_play: bool = true
 
 # Main methods
 
 func _ready():
-	_set_up_prefabs()
+	_set_up_resources()
 	_set_up_objects()
 	_set_up_battle_area()
 	BattleBulletManager.set_up()
@@ -125,6 +127,7 @@ static func handle_enemy_defeat(p_enemy: BattleEnemy):
 	
 	var enemy_count = _enemy_list.size()
 	if enemy_count == 0:
+		_handle_end_battle()
 		return
 	
 	BattleUIEnemyRemaining.show_enemy_remaining(enemy_count)
@@ -148,13 +151,18 @@ static func skill_camera_toggle_background(p_state: bool):
 
 # Private functions
 
-func _set_up_prefabs():
+func _set_up_resources():
 	_prefab_enemy = preload("res://prefabs/prefab_enemy.tscn")
 	_prefab_ripple = preload("res://prefabs/battle/misc/prefab_battle_misc_ripple.tscn")
 	_prefab_enemy_ripple = preload("res://prefabs/battle/misc/prefab_battle_misc_enemy_ripple.tscn")
+	_prefab_scene_overworld = preload("res://scenes/scene_overworld.tscn")
+	
+	_sprite_bullet_default = preload("res://sprites/bullets/spr_bullet_0.png")
+	_sprite_bullet_default_dropshadow = preload("res://sprites/bullets/spr_bullet_0_dropshadow.png")
 
 
 func _set_up_objects():
+	_scene_tree = get_tree()
 	_obj_player = $"../Level/Node2D/TopLeft/Player"
 	_obj_skill_camera_background_dark = $"../Level/SkillCameraBackground"
 	_obj_background_scene = $"../Level/Background/SubViewportContainer/SubViewport/BackgroundScene"
@@ -187,10 +195,10 @@ func _set_up_battle():
 		# BattleBossMiscScatter,
 		# BattleBossRivalSpin,
 		BattleEnemyNatureTriangleAimer,
-		BattleEnemyNatureTriangleAimer,
 		# BattleEnemyDandelion,
-		BattleEnemyDenseRing,
+		# BattleEnemyDenseRing,
 		# BattleEnemyWindSuck,
+		BattleEnemyConstrictor,
 	]
 	var spawn_region_start: Vector2 = Vector2(0, 0)
 	var spawn_region_end: Vector2 = Vector2(battle_area_size.x, battle_area_size.y)
@@ -260,10 +268,14 @@ func _update_background_scene(p_delta: float):
 		_obj_background_scene.update(p_delta)
 
 
-# Private functions ✦ Delta scaling
-
 func _handle_delta_scaling(p_delta: float):
 	pass
+
+
+static func _handle_end_battle():
+	await _scene_tree.create_timer(2.0).timeout
+	_scene_tree.change_scene_to_packed(_prefab_scene_overworld)
+
 
 # Debug methods
 
